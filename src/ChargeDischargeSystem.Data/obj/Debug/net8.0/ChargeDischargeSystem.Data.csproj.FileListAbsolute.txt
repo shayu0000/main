@@ -1,0 +1,17 @@
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\bin\Debug\net8.0\ChargeDischargeSystem.Data.dll
+e:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\bin\Debug\net8.0\ChargeDischargeSystem.Data.deps.json
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\bin\Debug\net8.0\ChargeDischargeSystem.Data.pdb
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\bin\Debug\net8.0\ChargeDischargeSystem.Common.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\bin\Debug\net8.0\ChargeDischargeSystem.Models.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\bin\Debug\net8.0\ChargeDischargeSystem.Models.pdb
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\bin\Debug\net8.0\ChargeDischargeSystem.Common.pdb
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\obj\Debug\net8.0\ChargeDischargeSystem.Data.csproj.AssemblyReference.cache
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\obj\Debug\net8.0\ChargeDischargeSystem.Data.GeneratedMSBuildEditorConfig.editorconfig
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\obj\Debug\net8.0\ChargeDischargeSystem.Data.AssemblyInfoInputs.cache
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\obj\Debug\net8.0\ChargeDischargeSystem.Data.AssemblyInfo.cs
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\obj\Debug\net8.0\ChargeDischargeSystem.Data.csproj.CoreCompileInputs.cache
+e:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\obj\Debug\net8.0\ChargeDi.AC54E596.Up2Date
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\obj\Debug\net8.0\ChargeDischargeSystem.Data.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\obj\Debug\net8.0\refint\ChargeDischargeSystem.Data.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\obj\Debug\net8.0\ChargeDischargeSystem.Data.pdb
+e:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Data\obj\Debug\net8.0\ref\ChargeDischargeSystem.Data.dll

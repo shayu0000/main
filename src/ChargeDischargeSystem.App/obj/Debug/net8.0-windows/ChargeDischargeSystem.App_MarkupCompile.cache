@@ -1,0 +1,20 @@
+﻿ChargeDischargeSystem.App
+
+
+winexe
+C#
+.cs
+e:\Projects\Charge And Discharge\src\ChargeDischargeSystem.App\obj\Debug\net8.0-windows\
+ChargeDischargeSystem.App
+none
+false
+TRACE;DEBUG;NET;NET8_0;NETCOREAPP;WINDOWS;WINDOWS7_0;NET5_0_OR_GREATER;NET6_0_OR_GREATER;NET7_0_OR_GREATER;NET8_0_OR_GREATER;NETCOREAPP3_0_OR_GREATER;NETCOREAPP3_1_OR_GREATER;WINDOWS7_0_OR_GREATER
+e:\Projects\Charge And Discharge\src\ChargeDischargeSystem.App\App.xaml
+15127559179
+
+31-110413341
+241-455565892
+LoginWindow.xaml;MainWindow.xaml;Views\BatteryProtocolView.xaml;Views\CalibrationView.xaml;Views\DashboardView.xaml;Views\DataRecordView.xaml;Views\DeviceManagementView.xaml;Views\FaultRecordView.xaml;Views\FirmwareUpgradeView.xaml;Views\LoginView.xaml;Views\ProtocolManagementView.xaml;Views\RegisterDialog.xaml;Views\ReportView.xaml;Views\SettingsView.xaml;Views\UserManagementView.xaml;
+
+False
+

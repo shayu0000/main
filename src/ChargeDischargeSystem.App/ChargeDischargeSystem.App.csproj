@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>ChargeDischargeSystem.App</RootNamespace>
+    <AssemblyName>ChargeDischargeSystem.App</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="OxyPlot.Wpf" Version="2.2.0" />
+    <PackageReference Include="YamlDotNet" Version="15.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChargeDischargeSystem.Models\ChargeDischargeSystem.Models.csproj" />
+    <ProjectReference Include="..\ChargeDischargeSystem.Core\ChargeDischargeSystem.Core.csproj" />
+    <ProjectReference Include="..\ChargeDischargeSystem.Hardware\ChargeDischargeSystem.Hardware.csproj" />
+    <ProjectReference Include="..\ChargeDischargeSystem.Common\ChargeDischargeSystem.Common.csproj" />
+  </ItemGroup>
+
+</Project>

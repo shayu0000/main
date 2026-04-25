@@ -1,0 +1,11 @@
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Hardware\bin\Debug\net8.0\ChargeDischargeSystem.Hardware.deps.json
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Hardware\bin\Debug\net8.0\ChargeDischargeSystem.Hardware.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Hardware\bin\Debug\net8.0\ChargeDischargeSystem.Hardware.pdb
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Hardware\obj\Debug\net8.0\ChargeDischargeSystem.Hardware.GeneratedMSBuildEditorConfig.editorconfig
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Hardware\obj\Debug\net8.0\ChargeDischargeSystem.Hardware.AssemblyInfoInputs.cache
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Hardware\obj\Debug\net8.0\ChargeDischargeSystem.Hardware.AssemblyInfo.cs
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Hardware\obj\Debug\net8.0\ChargeDischargeSystem.Hardware.csproj.CoreCompileInputs.cache
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Hardware\obj\Debug\net8.0\ChargeDischargeSystem.Hardware.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Hardware\obj\Debug\net8.0\refint\ChargeDischargeSystem.Hardware.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Hardware\obj\Debug\net8.0\ChargeDischargeSystem.Hardware.pdb
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Hardware\obj\Debug\net8.0\ref\ChargeDischargeSystem.Hardware.dll

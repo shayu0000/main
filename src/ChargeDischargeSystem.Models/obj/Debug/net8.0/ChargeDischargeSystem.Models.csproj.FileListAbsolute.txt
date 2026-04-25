@@ -1,0 +1,11 @@
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Models\bin\Debug\net8.0\ChargeDischargeSystem.Models.deps.json
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Models\bin\Debug\net8.0\ChargeDischargeSystem.Models.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Models\bin\Debug\net8.0\ChargeDischargeSystem.Models.pdb
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Models\obj\Debug\net8.0\ChargeDischargeSystem.Models.GeneratedMSBuildEditorConfig.editorconfig
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Models\obj\Debug\net8.0\ChargeDischargeSystem.Models.AssemblyInfoInputs.cache
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Models\obj\Debug\net8.0\ChargeDischargeSystem.Models.AssemblyInfo.cs
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Models\obj\Debug\net8.0\ChargeDischargeSystem.Models.csproj.CoreCompileInputs.cache
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Models\obj\Debug\net8.0\ChargeDischargeSystem.Models.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Models\obj\Debug\net8.0\refint\ChargeDischargeSystem.Models.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Models\obj\Debug\net8.0\ChargeDischargeSystem.Models.pdb
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Models\obj\Debug\net8.0\ref\ChargeDischargeSystem.Models.dll

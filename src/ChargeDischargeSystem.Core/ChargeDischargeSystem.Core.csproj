@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>ChargeDischargeSystem.Core</RootNamespace>
+    <AssemblyName>ChargeDischargeSystem.Core</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
+    <PackageReference Include="YamlDotNet" Version="15.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChargeDischargeSystem.Models\ChargeDischargeSystem.Models.csproj" />
+    <ProjectReference Include="..\ChargeDischargeSystem.Data\ChargeDischargeSystem.Data.csproj" />
+    <ProjectReference Include="..\ChargeDischargeSystem.Hardware\ChargeDischargeSystem.Hardware.csproj" />
+    <ProjectReference Include="..\ChargeDischargeSystem.Common\ChargeDischargeSystem.Common.csproj" />
+  </ItemGroup>
+
+</Project>

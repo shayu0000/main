@@ -1,0 +1,341 @@
+# ============================================================
+# MW级充放电上位机系统 - 电池协议定义配置文件
+# 文件名: config/battery_protocols.yaml
+# 格式: YAML
+# 说明: 定义电池管理系统(BMS)通信协议的CAN帧格式、
+#       故障码映射及自定义协议模板。
+#       协议包括GB/T 27930-2015国标协议和自定义扩展协议。
+# ============================================================
+
+# ---------- 全局协议配置 ----------
+protocols:
+
+  # ============================================================
+  # 协议1: GB/T 27930-2015
+  # 全称: 电动汽车非车载传导式充电机与电池管理系统之间的通信协议
+  # 说明: 中国国家标准，定义充电桩与BMS之间的CAN通信规范
+  # ============================================================
+  - protocol_name: "GB_T_27930_2015"
+    display_name: "GB/T 27930-2015"
+    version: "2015"
+    description: "电动汽车非车载传导式充电机与电池管理系统之间的通信协议"
+    # 协议状态: active(启用) / deprecated(弃用) / testing(测试中)
+    status: "active"
+
+    # ---------- 帧定义 ----------
+    # 定义协议中使用的CAN帧ID及其数据格式
+    frames:
+
+      # 帧1: BMS广播帧 (BMS → 充电机)
+      - frame_name: "BMS_BROADCAST"
+        description: "BMS广播帧 - 发送电池组基本参数和充电需求"
+        can_id: 0x1000                      # 标准帧ID (11位)
+        can_id_format: "standard"           # standard(11位) / extended(29位)
+        direction: "bms_to_charger"         # 数据方向: bms_to_charger / charger_to_bms
+        cycle_time_ms: 100                  # 发送周期(毫秒)
+        data_length: 8                      # 数据长度(字节)
+        # 帧数据字段定义
+        fields:
+          - name: "battery_type"
+            description: "电池类型编码 (0x01=铅酸, 0x02=锂离子, 0x03=磷酸铁锂, 0x04=锰酸锂)"
+            byte_offset: 0
+            bit_offset: 0
+            bit_length: 8
+            data_type: "uint8"
+            valid_range: [1, 4]
+
+          - name: "rated_capacity"
+            description: "电池组额定容量(Ah)"
+            byte_offset: 1
+            bit_offset: 0
+            bit_length: 16
+            scale_factor: 0.1
+            data_type: "uint16"
+
+          - name: "rated_voltage"
+            description: "电池组额定电压(V)"
+            byte_offset: 3
+            bit_offset: 0
+            bit_length: 16
+            scale_factor: 0.1
+            data_type: "uint16"
+
+          - name: "max_charge_voltage"
+            description: "最高允许充电总电压(V)"
+            byte_offset: 5
+            bit_offset: 0
+            bit_length: 16
+            scale_factor: 0.1
+            data_type: "uint16"
+
+      # 帧2: 单体电池电压帧 (BMS → 充电机)
+      - frame_name: "CELL_VOLTAGE"
+        description: "单体电池电压帧 - 发送各单体电芯电压数据"
+        can_id: 0x1100
+        can_id_format: "standard"
+        direction: "bms_to_charger"
+        cycle_time_ms: 500                 # 500ms周期
+        data_length: 8
+        fields:
+          - name: "cell_count"
+            description: "本帧包含的单体电池数量"
+            byte_offset: 0
+            bit_offset: 0
+            bit_length: 8
+            data_type: "uint8"
+            valid_range: [1, 4]            # 每帧最多4个单体电压
+
+          - name: "cell_voltage_1"
+            description: "第1个单体电池电压(V)"
+            byte_offset: 1
+            bit_offset: 0
+            bit_length: 16
+            scale_factor: 0.001
+            data_type: "uint16"
+
+          - name: "cell_voltage_2"
+            description: "第2个单体电池电压(V)"
+            byte_offset: 3
+            bit_offset: 0
+            bit_length: 16
+            scale_factor: 0.001
+            data_type: "uint16"
+
+          - name: "cell_voltage_3"
+            description: "第3个单体电池电压(V)"
+            byte_offset: 5
+            bit_offset: 0
+            bit_length: 16
+            scale_factor: 0.001
+            data_type: "uint16"
+
+      # 帧3: BMS状态帧 (BMS → 充电机)
+      - frame_name: "BMS_STATUS"
+        description: "BMS状态帧 - 发送BMS运行状态、故障和接触器状态"
+        can_id: 0x1200
+        can_id_format: "standard"
+        direction: "bms_to_charger"
+        cycle_time_ms: 250
+        data_length: 8
+        fields:
+          - name: "bms_work_status"
+            description: "BMS工作状态 (0x00=待机, 0x01=充电就绪, 0x02=充电中, 0x03=充电完成, 0x04=故障)"
+            byte_offset: 0
+            bit_offset: 0
+            bit_length: 8
+            data_type: "uint8"
+            enum_values:
+              0: "待机"
+              1: "充电就绪"
+              2: "充电中"
+              3: "充电完成"
+              4: "故障"
+
+          - name: "contactor_status"
+            description: "接触器状态 (bit0=主正, bit1=主负, bit2=预充)"
+            byte_offset: 1
+            bit_offset: 0
+            bit_length: 8
+            data_type: "uint8"
+
+          - name: "insulation_status"
+            description: "绝缘状态 (0x00=正常, 0x01=异常)"
+            byte_offset: 2
+            bit_offset: 0
+            bit_length: 8
+            data_type: "uint8"
+
+          - name: "bms_fault_level"
+            description: "BMS故障等级 (0x00=无故障, 0x01=一级故障, 0x02=二级故障, 0x03=三级故障)"
+            byte_offset: 3
+            bit_offset: 0
+            bit_length: 8
+            data_type: "uint8"
+
+    # ---------- 故障码定义 ----------
+    # BMS故障码映射表，用于解析BMS上报的故障代码
+    fault_codes:
+      # 一级故障（严重，需立即停机）
+      - code: 0x0001
+        name: "over_voltage"
+        description: "电池组过压保护"
+        level: "CRITICAL"
+        category: "voltage"
+      
+      - code: 0x0002
+        name: "under_voltage"
+        description: "电池组欠压保护"
+        level: "CRITICAL"
+        category: "voltage"
+
+      - code: 0x0003
+        name: "over_temperature"
+        description: "电池组过温保护"
+        level: "CRITICAL"
+        category: "temperature"
+
+      - code: 0x0004
+        name: "under_temperature"
+        description: "电池组低温保护"
+        level: "MAJOR"
+        category: "temperature"
+
+      - code: 0x0005
+        name: "communication_error"
+        description: "BMS通讯异常"
+        level: "CRITICAL"
+        category: "communication"
+
+      - code: 0x0006
+        name: "cell_over_voltage"
+        description: "单体电池过压"
+        level: "CRITICAL"
+        category: "voltage"
+
+      - code: 0x0007
+        name: "cell_under_voltage"
+        description: "单体电池欠压"
+        level: "CRITICAL"
+        category: "voltage"
+
+      - code: 0x0008
+        name: "cell_voltage_imbalance"
+        description: "单体电池压差过大"
+        level: "MAJOR"
+        category: "voltage"
+
+      - code: 0x0009
+        name: "over_current_charge"
+        description: "充电过流"
+        level: "CRITICAL"
+        category: "current"
+
+      - code: 0x000A
+        name: "over_current_discharge"
+        description: "放电过流"
+        level: "CRITICAL"
+        category: "current"
+
+      - code: 0x000B
+        name: "insulation_fault"
+        description: "绝缘故障"
+        level: "CRITICAL"
+        category: "safety"
+
+      - code: 0x000C
+        name: "soc_low"
+        description: "SOC过低告警"
+        level: "MAJOR"
+        category: "soc"
+
+      - code: 0x000D
+        name: "soh_degraded"
+        description: "SOH劣化告警"
+        level: "MINOR"
+        category: "soh"
+
+      - code: 0x000E
+        name: "contactor_stuck"
+        description: "接触器粘连故障"
+        level: "CRITICAL"
+        category: "hardware"
+
+      - code: 0x000F
+        name: "sensor_fault"
+        description: "传感器故障"
+        level: "MAJOR"
+        category: "hardware"
+
+      - code: 0x0010
+        name: "can_bus_off"
+        description: "CAN总线关闭"
+        level: "CRITICAL"
+        category: "communication"
+
+      - code: 0x0011
+        name: "balance_circuit_fault"
+        description: "均衡电路故障"
+        level: "MINOR"
+        category: "hardware"
+
+  # ============================================================
+  # 模板: Custom_Protocol 自定义协议占位
+  # 说明: 用于支持非标准私有协议的快速扩展
+  #       现场工程师可根据实际设备协议修改此模板
+  # ============================================================
+  - protocol_name: "Custom_Protocol"
+    display_name: "自定义协议"
+    version: "1.0"
+    description: "自定义私有CAN通信协议模板 - 请根据实际设备手册修改帧定义和故障码"
+    status: "testing"                   # 模板协议默认为测试状态
+
+    # ---------- 帧定义模板 ----------
+    # 在下方添加自定义CAN帧定义（参考GB/T 27930-2015的格式）
+    frames:
+      - frame_name: "CUSTOM_DATA_FRAME_1"
+        description: "自定义数据帧模板 #1 - 请根据实际需要修改"
+        can_id: 0x0100
+        can_id_format: "standard"
+        direction: "bidirectional"
+        cycle_time_ms: 100
+        data_length: 8
+        fields:
+          - name: "custom_field_1"
+            description: "自定义字段1 - 请根据实际定义修改"
+            byte_offset: 0
+            bit_offset: 0
+            bit_length: 16
+            scale_factor: 1.0
+            data_type: "uint16"
+
+          - name: "custom_field_2"
+            description: "自定义字段2 - 请根据实际定义修改"
+            byte_offset: 2
+            bit_offset: 0
+            bit_length: 16
+            scale_factor: 1.0
+            data_type: "uint16"
+
+      - frame_name: "CUSTOM_STATUS_FRAME"
+        description: "自定义状态帧模板"
+        can_id: 0x0200
+        can_id_format: "standard"
+        direction: "device_to_host"
+        cycle_time_ms: 250
+        data_length: 8
+        fields:
+          - name: "device_status"
+            description: "设备状态码"
+            byte_offset: 0
+            bit_offset: 0
+            bit_length: 8
+            data_type: "uint8"
+
+          - name: "error_code"
+            description: "错误码"
+            byte_offset: 1
+            bit_offset: 0
+            bit_length: 8
+            data_type: "uint8"
+
+    # ---------- 故障码定义模板 ----------
+    # 在下方添加自定义故障码（参考GB/T 27930-2015的格式）
+    fault_codes:
+      - code: 0x0001
+        name: "custom_fault_1"
+        description: "自定义故障1 - 请根据实际定义修改"
+        level: "WARNING"
+        category: "general"
+
+# ---------- 协议公共配置 ----------
+common_settings:
+  # CAN帧接收超时(毫秒)
+  frame_timeout_ms: 500
+  # 最大重发次数
+  max_retransmit_count: 3
+  # 是否启用帧计数器校验（防丢帧）
+  enable_frame_counter: true
+  # 是否启用CRC校验（除CAN硬件CRC外的应用层校验）
+  enable_app_crc: true
+  # 应用层CRC多项式（CRC16-CCITT: x^16 + x^12 + x^5 + 1）
+  crc_polynomial: 0x1021

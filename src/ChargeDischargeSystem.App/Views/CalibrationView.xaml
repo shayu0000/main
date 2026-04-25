@@ -1,0 +1,40 @@
+<UserControl x:Class="ChargeDischargeSystem.App.Views.CalibrationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="600" d:DesignWidth="900"
+             Background="{StaticResource BackgroundColor}">
+
+    <Grid Margin="12">
+        <Border Background="{StaticResource SurfaceColor}"
+                BorderBrush="{StaticResource BorderColor}" BorderThickness="1">
+            <Grid Margin="12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                    <ComboBox Style="{StaticResource MaterialComboBox}" Width="180"
+                              ItemsSource="{Binding DeviceList}"
+                              SelectedItem="{Binding SelectedDevice}"
+                              DisplayMemberPath="DeviceName" Margin="0,0,12,0"/>
+                    <ComboBox Style="{StaticResource MaterialComboBox}" Width="120"
+                              ItemsSource="{Binding CalibrationTypeOptions}"
+                              SelectedItem="{Binding SelectedCalibrationType}"/>
+                </StackPanel>
+
+                <DataGrid Grid.Row="1" Style="{StaticResource MaterialDataGrid}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="通道" Binding="{Binding Channel}" Width="80"/>
+                        <DataGridTextColumn Header="当前校准值" Binding="{Binding CurrentValue}" Width="*"/>
+                        <DataGridTextColumn Header="标准值" Binding="{Binding StandardValue}" Width="*"/>
+                        <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

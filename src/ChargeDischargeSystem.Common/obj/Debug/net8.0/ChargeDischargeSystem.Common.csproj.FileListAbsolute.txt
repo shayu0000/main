@@ -1,0 +1,12 @@
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\bin\Debug\net8.0\ChargeDischargeSystem.Common.deps.json
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\bin\Debug\net8.0\ChargeDischargeSystem.Common.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\bin\Debug\net8.0\ChargeDischargeSystem.Common.pdb
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\obj\Debug\net8.0\ChargeDischargeSystem.Common.csproj.AssemblyReference.cache
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\obj\Debug\net8.0\ChargeDischargeSystem.Common.GeneratedMSBuildEditorConfig.editorconfig
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\obj\Debug\net8.0\ChargeDischargeSystem.Common.AssemblyInfoInputs.cache
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\obj\Debug\net8.0\ChargeDischargeSystem.Common.AssemblyInfo.cs
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\obj\Debug\net8.0\ChargeDischargeSystem.Common.csproj.CoreCompileInputs.cache
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\obj\Debug\net8.0\ChargeDischargeSystem.Common.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\obj\Debug\net8.0\refint\ChargeDischargeSystem.Common.dll
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\obj\Debug\net8.0\ChargeDischargeSystem.Common.pdb
+E:\Projects\Charge And Discharge\src\ChargeDischargeSystem.Common\obj\Debug\net8.0\ref\ChargeDischargeSystem.Common.dll

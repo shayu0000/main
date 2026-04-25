@@ -1,0 +1,466 @@
+# ============================================================
+# MW级充放电上位机系统 - 设备参数配置文件
+# 文件名: config/devices.yaml
+# 格式: YAML
+# 说明: 定义CAN总线上的所有被测设备及其数据点映射。
+#       每台设备包含基本通信参数和详细的数据点定义。
+#       测试人员添加新设备时，请参考下方示例格式。
+# ============================================================
+
+# ---------- 全局配置 ----------
+# 设备列表，每项为一个设备定义
+devices:
+
+  # ============================================================
+  # 设备1: 储能变流器 PCS_001
+  # 功率等级: 1000kW / 额定电压: 800V / 额定电流: 1250A
+  # ============================================================
+  - device_id: "PCS_001"
+    # 设备名称（显示用）
+    name: "储能变流器 #1"
+    # 设备类型标识
+    device_type: "PCS"
+    # 制造商
+    manufacturer: "阳光电源"
+    # 设备型号
+    model: "SG1000UD"
+    # 额定功率(kW)
+    rated_power_kw: 1000
+    # 额定电压(V)
+    rated_voltage_v: 800
+    # 额定电流(A)
+    rated_current_a: 1250
+    # 通信协议类型: Modbus_CAN / GB_T_27930_2015 / Custom_Protocol
+    protocol: "Modbus_CAN"
+    # CAN通信地址（节点ID），Modbus从站地址
+    can_address: 0x01
+    # 数据采集优先级: high / normal / low
+    polling_priority: "high"
+    # 数据点轮询周期(ms)，0表示使用全局PollIntervalMs
+    polling_interval_ms: 0
+    # 是否启用该设备监控
+    enabled: true
+    # 设备描述信息
+    description: "1000kW储能变流器，DC/AC双向变换，支持恒功率/恒压/恒流模式"
+
+    # ---------- 数据点定义 ----------
+    # 每个数据点映射到CAN消息中的一个数据字段
+    data_points:
+      # ===== 直流侧参数 =====
+      - name: "dc_voltage"
+        description: "直流侧电压"
+        can_id: 0x100
+        data_offset: 0       # 数据在CAN帧中的起始字节偏移
+        data_length: 2       # 数据长度(字节)
+        scale_factor: 0.1    # 缩放系数，实际值 = 原始值 * scale_factor
+        offset_value: 0.0    # 偏移量，实际值 = 原始值 * scale_factor + offset_value
+        unit: "V"
+        data_type: "uint16"  # 数据类型: uint8/uint16/int16/uint32/int32/float
+        alarm:
+          high_high: 880     # 高高报警阈值(V)
+          high: 850           # 高报警阈值(V)
+          low: 700            # 低报警阈值(V)
+          low_low: 650        # 低低报警阈值(V)
+
+      - name: "dc_current"
+        description: "直流侧电流"
+        can_id: 0x100
+        data_offset: 2
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: 0.0
+        unit: "A"
+        data_type: "uint16"
+        alarm:
+          high_high: 1375
+          high: 1312
+          low: 100
+          low_low: 50
+
+      - name: "dc_power"
+        description: "直流侧功率"
+        can_id: 0x100
+        data_offset: 4
+        data_length: 4
+        scale_factor: 0.001    # 转换为kW
+        offset_value: 0.0
+        unit: "kW"
+        data_type: "int32"     # 有符号，充/放电方向
+        alarm:
+          high_high: 1100
+          high: 1050
+
+      # ===== 交流侧参数 =====
+      - name: "ac_voltage_u"
+        description: "交流A相电压"
+        can_id: 0x101
+        data_offset: 0
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: 0.0
+        unit: "V"
+        data_type: "uint16"
+        alarm:
+          high_high: 440
+          high: 420
+          low: 360
+          low_low: 340
+
+      - name: "ac_voltage_v"
+        description: "交流B相电压"
+        can_id: 0x101
+        data_offset: 2
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: 0.0
+        unit: "V"
+        data_type: "uint16"
+        alarm:
+          high_high: 440
+          high: 420
+          low: 360
+          low_low: 340
+
+      - name: "ac_voltage_w"
+        description: "交流C相电压"
+        can_id: 0x101
+        data_offset: 4
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: 0.0
+        unit: "V"
+        data_type: "uint16"
+        alarm:
+          high_high: 440
+          high: 420
+          low: 360
+          low_low: 340
+
+      - name: "ac_current_u"
+        description: "交流A相电流"
+        can_id: 0x102
+        data_offset: 0
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: 0.0
+        unit: "A"
+        data_type: "uint16"
+        alarm:
+          high_high: 920
+          high: 875
+
+      - name: "ac_current_v"
+        description: "交流B相电流"
+        can_id: 0x102
+        data_offset: 2
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: 0.0
+        unit: "A"
+        data_type: "uint16"
+        alarm:
+          high_high: 920
+          high: 875
+
+      - name: "ac_current_w"
+        description: "交流C相电流"
+        can_id: 0x102
+        data_offset: 4
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: 0.0
+        unit: "A"
+        data_type: "uint16"
+        alarm:
+          high_high: 920
+          high: 875
+
+      - name: "ac_frequency"
+        description: "交流电网频率"
+        can_id: 0x103
+        data_offset: 0
+        data_length: 2
+        scale_factor: 0.01
+        offset_value: 0.0
+        unit: "Hz"
+        data_type: "uint16"
+        alarm:
+          high_high: 50.5
+          high: 50.2
+          low: 49.8
+          low_low: 49.5
+
+      # ===== 状态与温度参数 =====
+      - name: "pcs_status"
+        description: "PCS运行状态码"
+        can_id: 0x104
+        data_offset: 0
+        data_length: 2
+        scale_factor: 1.0
+        offset_value: 0.0
+        unit: ""
+        data_type: "uint16"
+        # 状态码不需要告警阈值
+        alarm: {}
+
+      - name: "igbt_temp_a"
+        description: "IGBT模块A相温度"
+        can_id: 0x105
+        data_offset: 0
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: -40.0  # 温度传感器偏移(如NTC热敏电阻需减去基准温度)
+        unit: "°C"
+        data_type: "uint16"
+        alarm:
+          high_high: 110
+          high: 95
+          low: -20
+          low_low: -30
+
+      - name: "igbt_temp_b"
+        description: "IGBT模块B相温度"
+        can_id: 0x105
+        data_offset: 2
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: -40.0
+        unit: "°C"
+        data_type: "uint16"
+        alarm:
+          high_high: 110
+          high: 95
+          low: -20
+          low_low: -30
+
+      - name: "igbt_temp_c"
+        description: "IGBT模块C相温度"
+        can_id: 0x105
+        data_offset: 4
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: -40.0
+        unit: "°C"
+        data_type: "uint16"
+        alarm:
+          high_high: 110
+          high: 95
+          low: -20
+          low_low: -30
+
+      - name: "efficiency"
+        description: "PCS效率"
+        can_id: 0x106
+        data_offset: 0
+        data_length: 2
+        scale_factor: 0.01
+        offset_value: 0.0
+        unit: "%"
+        data_type: "uint16"
+        alarm:
+          low: 95.0
+          low_low: 90.0
+
+      - name: "fault_code"
+        description: "PCS故障码"
+        can_id: 0x107
+        data_offset: 0
+        data_length: 4
+        scale_factor: 1.0
+        offset_value: 0.0
+        unit: ""
+        data_type: "uint32"
+        alarm: {}
+
+  # ============================================================
+  # 设备2: 电池管理系统 BMS_001
+  # 协议: GB/T 27930-2015（电动汽车非车载传导式充电机与电池管理系统之间的通信协议）
+  # ============================================================
+  - device_id: "BMS_001"
+    name: "电池管理系统 #1"
+    device_type: "BMS"
+    manufacturer: "宁德时代"
+    model: "BMS-CATL-V3"
+    rated_power_kw: 0        # BMS不涉及功率
+    rated_voltage_v: 800
+    rated_current_a: 1250
+    protocol: "GB_T_27930_2015"
+    can_address: 0x10
+    polling_priority: "high"
+    polling_interval_ms: 0
+    enabled: true
+    description: "电池管理系统，负责电池组电压/温度/SOC监测与均衡管理"
+
+    data_points:
+      # ===== 电池组总参数 =====
+      - name: "battery_voltage"
+        description: "电池组总电压"
+        can_id: 0x200
+        data_offset: 0
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: 0.0
+        unit: "V"
+        data_type: "uint16"
+        alarm:
+          high_high: 880
+          high: 850
+          low: 700
+          low_low: 650
+
+      - name: "battery_current"
+        description: "电池组电流（正=充电，负=放电）"
+        can_id: 0x200
+        data_offset: 2
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: -3276.8  # 有符号转换偏移
+        unit: "A"
+        data_type: "int16"
+        alarm:
+          high_high: 1375
+          high: 1312
+          low: -1375
+          low_low: -1375
+
+      - name: "soc"
+        description: "电池荷电状态(SOC)"
+        can_id: 0x201
+        data_offset: 0
+        data_length: 2
+        scale_factor: 0.01
+        offset_value: 0.0
+        unit: "%"
+        data_type: "uint16"
+        alarm:
+          high_high: 105    # SOC不应超过100%
+          high: 100
+          low: 20
+          low_low: 10
+
+      - name: "soh"
+        description: "电池健康状态(SOH)"
+        can_id: 0x201
+        data_offset: 2
+        data_length: 2
+        scale_factor: 0.01
+        offset_value: 0.0
+        unit: "%"
+        data_type: "uint16"
+        alarm:
+          low: 80
+          low_low: 70
+
+      # ===== 单体电池参数 =====
+      - name: "cell_voltage_max"
+        description: "单体最高电压"
+        can_id: 0x202
+        data_offset: 0
+        data_length: 2
+        scale_factor: 0.001
+        offset_value: 0.0
+        unit: "V"
+        data_type: "uint16"
+        alarm:
+          high_high: 4.25
+          high: 4.20
+
+      - name: "cell_voltage_min"
+        description: "单体最低电压"
+        can_id: 0x202
+        data_offset: 2
+        data_length: 2
+        scale_factor: 0.001
+        offset_value: 0.0
+        unit: "V"
+        data_type: "uint16"
+        alarm:
+          low: 2.80
+          low_low: 2.50
+
+      - name: "cell_voltage_avg"
+        description: "单体平均电压"
+        can_id: 0x202
+        data_offset: 4
+        data_length: 2
+        scale_factor: 0.001
+        offset_value: 0.0
+        unit: "V"
+        data_type: "uint16"
+        alarm: {}
+
+      # ===== 温度参数 =====
+      - name: "battery_temp_max"
+        description: "电池组最高温度"
+        can_id: 0x203
+        data_offset: 0
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: -40.0
+        unit: "°C"
+        data_type: "uint16"
+        alarm:
+          high_high: 60
+          high: 50
+          low: -10
+          low_low: -20
+
+      - name: "battery_temp_min"
+        description: "电池组最低温度"
+        can_id: 0x203
+        data_offset: 2
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: -40.0
+        unit: "°C"
+        data_type: "uint16"
+        alarm:
+          low: -10
+          low_low: -20
+
+      - name: "battery_temp_avg"
+        description: "电池组平均温度"
+        can_id: 0x203
+        data_offset: 4
+        data_length: 2
+        scale_factor: 0.1
+        offset_value: -40.0
+        unit: "°C"
+        data_type: "uint16"
+        alarm: {}
+
+      # ===== BMS状态与故障 =====
+      - name: "bms_status"
+        description: "BMS运行状态码"
+        can_id: 0x204
+        data_offset: 0
+        data_length: 2
+        scale_factor: 1.0
+        offset_value: 0.0
+        unit: ""
+        data_type: "uint16"
+        alarm: {}
+
+      - name: "bms_fault_code"
+        description: "BMS故障码"
+        can_id: 0x204
+        data_offset: 2
+        data_length: 2
+        scale_factor: 1.0
+        offset_value: 0.0
+        unit: ""
+        data_type: "uint16"
+        alarm: {}
+
+      - name: "insulation_resistance"
+        description: "绝缘电阻"
+        can_id: 0x205
+        data_offset: 0
+        data_length: 2
+        scale_factor: 1.0
+        offset_value: 0.0
+        unit: "kΩ"
+        data_type: "uint16"
+        alarm:
+          low: 500
+          low_low: 100

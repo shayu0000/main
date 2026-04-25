@@ -1,0 +1,129 @@
+# ============================================================
+# MW级充放电上位机系统 - 校准参数配置文件
+# 文件名: config/calibration_params.yaml
+# 格式: YAML
+# 说明: 定义设备校准的各类参数，包括零点校准、量程校准、
+#       电压电流校准点配置以及校准有效期管理。
+#       所有校准操作均需有权限的用户执行。
+# ============================================================
+
+# ---------- 零点校准参数 ----------
+# 零点校准用于消除系统的固有偏置误差
+zero_calibration:
+  # 校准说明
+  description: "零点校准 - 在输入端短路或零输入条件下采样，计算系统零偏并补偿"
+  # 采样点数：采集多少个样本后取平均作为零点值
+  sample_count: 100
+  # 稳定性阈值(%)：相邻两组采样均值的偏差小于此值认为稳定
+  stability_threshold_percent: 0.1
+  # 最大允许零偏(%)：零点校准结果相对于满量程的比例超过此值则报错
+  max_zero_offset_percent: 2.0
+  # 采样间隔(毫秒)
+  sample_interval_ms: 10
+  # 超时时间(秒)：如果在此时限内未达到稳定则校准失败
+  timeout_seconds: 30
+  # 校准失败重试次数
+  max_retry_count: 3
+  # 校准数据滤波方式: average(平均) / median(中值) / moving_average(滑动平均)
+  filter_method: "average"
+  # 异常值剔除：标准差超过此倍数的样本将被剔除（0表示不剔除）
+  outlier_std_multiplier: 3.0
+
+# ---------- 量程校准参数 ----------
+# 量程校准用于修正系统的增益误差，确保全量程范围内测量准确
+span_calibration:
+  # 校准说明
+  description: "量程校准 - 接入已知精度的标准参考源，计算并修正系统增益误差"
+  # 采样点数
+  sample_count: 50
+  # 参考源精度(%)：标准源的精度等级
+  reference_accuracy_percent: 0.05
+  # 增益有效范围：校准后的增益系数必须在 [min, max] 之间，否则报错
+  gain_min: 0.95
+  gain_max: 1.05
+  # 线性度检查：是否验证全量程线性度
+  check_linearity: true
+  # 最大非线性误差(%)
+  max_nonlinearity_percent: 0.2
+  # 采样间隔(毫秒)
+  sample_interval_ms: 50
+  # 超时时间(秒)
+  timeout_seconds: 60
+  # 校准失败重试次数
+  max_retry_count: 2
+  # 温漂补偿：是否启用温度补偿（需要环境温度传感器）
+  enable_temperature_compensation: true
+
+# ---------- 电压校准点 ----------
+# 定义电压校准的标准参考点列表（单位：V）
+# 校准过程将在这些电压点上依次进行测量
+voltage_calibration_points:
+  # 校准点列表
+  points:
+    - voltage: 10
+      description: "超低电压点 - 检验小信号测量精度"
+    - voltage: 50
+      description: "低电压点"
+    - voltage: 100
+      description: "中低电压点"
+    - voltage: 200
+      description: "中电压点"
+    - voltage: 500
+      description: "中高电压点"
+    - voltage: 800
+      description: "额定电压点 - 系统额定工作电压"
+  # 每个校准点的允许误差(%)
+  tolerance_percent: 0.1
+  # 电压源要求
+  source_requirement: "可调直流稳压电源，精度0.05%，输出范围0~1000V"
+
+# ---------- 电流校准点 ----------
+# 定义电流校准的标准参考点列表（单位：A）
+# 电流校准通常需要外部分流器或电流钳配合标准电流源
+current_calibration_points:
+  points:
+    - current: 100
+      description: "小电流点 - 检验小信号测量精度"
+    - current: 250
+      description: "中低电流点"
+    - current: 500
+      description: "中电流点"
+    - current: 750
+      description: "中高电流点"
+    - current: 1000
+      description: "高电流点 - 接近额定电流"
+    - current: 1250
+      description: "额定电流点 - 系统额定工作电流"
+  tolerance_percent: 0.1
+  source_requirement: "可调直流电流源，精度0.05%，输出范围0~1500A，配合精密分流器"
+
+# ---------- 校准有效期管理 ----------
+calibration_validity:
+  # 校准有效期(天)：自校准完成之日起计算
+  validity_period_days: 90
+  # 提前提醒天数：距离过期还有N天时开始提醒用户重新校准
+  reminder_days: 7
+  # 校准过期后的处理策略: warn_only(仅警告) / restrict_operation(限制操作) / lock_device(锁定设备)
+  expired_action: "restrict_operation"
+  # 校准记录保留时间(天)：超过此时间的旧校准记录自动清理
+  record_retention_days: 730       # 保留2年
+  # 是否强制校准后才能使用设备
+  require_calibration_before_use: true
+  # 校准提醒通知方式: ui(界面提示) / log(日志记录) / both(两者)
+  reminder_method: "both"
+
+# ---------- 温度校准参数 ----------
+# 温度传感器校准（如IGBT温度、电池温度等）
+temperature_calibration:
+  # 是否启用温度校准
+  enabled: true
+  # 校准方法: two_point(两点校准) / single_point(单点偏移) / lookup_table(查表法)
+  method: "two_point"
+  # 低温参考点(°C)
+  low_reference_c: 0
+  # 高温参考点(°C)
+  high_reference_c: 100
+  # 允许的温度偏差(°C)
+  tolerance_c: 1.0
+  # 恒温稳定时间(分钟)：等待传感器温度充分稳定
+  stabilization_minutes: 15

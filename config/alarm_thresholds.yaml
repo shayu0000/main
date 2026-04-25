@@ -1,0 +1,118 @@
+# ============================================================
+# MW级充放电上位机系统 - 告警阈值配置文件
+# 文件名: config/alarm_thresholds.yaml
+# 格式: YAML
+# 说明: 定义系统告警级别、全局告警规则及通知策略。
+#       告警级别从高到低: CRITICAL > MAJOR > MINOR > WARNING
+#       每个级别有独立的颜色标识和默认通知动作。
+# ============================================================
+
+# ---------- 告警级别定义 ----------
+# 4个告警级别，按严重程度降序排列
+alarm_levels:
+
+  # 级别1: CRITICAL - 危急告警
+  # 设备即将损坏或已经损坏，需要立即停机
+  - level: "CRITICAL"
+    priority: 1                     # 优先级数字（1=最高）
+    color: "#FF0000"                # 红色 - 表示紧急危险
+    display_name: "危急"
+    description: "设备可能发生不可逆损坏，需要立即停机检查"
+    # 默认动作
+    default_action: "immediate_shutdown"  # 立即停机
+    # 是否触发声光报警
+    audible_alarm: true
+    # 是否需要人工确认才能清除
+    require_acknowledge: true
+    # 告警记录保留天数（CRITICAL告警永久保留）
+    retention_days: 0               # 0 = 永久保留
+    # 是否自动记录故障录波
+    auto_record_waveform: true
+    # 告警延时(秒) - 持续超过该时间才触发
+    trigger_delay_s: 0              # CRITICAL无延时，立即触发
+
+  # 级别2: MAJOR - 主要告警
+  # 设备性能严重下降或关键参数越限
+  - level: "MAJOR"
+    priority: 2
+    color: "#FF6600"                # 橙色 - 表示严重警告
+    display_name: "主要"
+    description: "设备关键参数严重偏离正常范围，需尽快处理"
+    default_action: "reduce_power"  # 降功率运行
+    audible_alarm: true
+    require_acknowledge: true
+    retention_days: 365             # 保留1年
+    auto_record_waveform: true
+    trigger_delay_s: 1              # 1秒延时避免瞬时波动误报
+
+  # 级别3: MINOR - 次要告警
+  # 参数轻微越限，不影响当前运行但需关注
+  - level: "MINOR"
+    priority: 3
+    color: "#FFCC00"                # 黄色 - 表示一般警告
+    display_name: "次要"
+    description: "设备参数轻微偏离正常范围，建议安排维护"
+    default_action: "log_and_notify"  # 记录并通知运维人员
+    audible_alarm: false
+    require_acknowledge: false
+    retention_days: 90              # 保留90天
+    auto_record_waveform: false
+    trigger_delay_s: 5              # 5秒延时避免瞬时波动误报
+
+  # 级别4: WARNING - 预警
+  # 趋势性劣化预警，提前通知维护
+  - level: "WARNING"
+    priority: 4
+    color: "#3399FF"                # 蓝色 - 表示提示信息
+    display_name: "预警"
+    description: "检测到参数趋势性变化，建议关注并安排预防性维护"
+    default_action: "log_only"      # 仅记录日志
+    audible_alarm: false
+    require_acknowledge: false
+    retention_days: 30              # 保留30天
+    auto_record_waveform: false
+    trigger_delay_s: 10             # 10秒延时避免瞬时波动误报
+
+# ---------- 全局告警规则 ----------
+# 这些规则独立于设备数据点的阈值告警，用于检测系统级异常
+global_alarm_rules:
+
+  # 规则1: 通信丢失告警
+  - rule_id: "GLOBAL_COMM_LOSS"
+    name: "communication_loss"
+    description: "CAN总线通信丢失检测 - 指定时间内未收到任何设备的心跳或数据帧"
+    alarm_level: "CRITICAL"         # 触发级别
+    # 超时时间(秒)，超过此时间未收到数据即触发
+    timeout_seconds: 30
+    # 复位条件: 连续收到数据帧后自动清除
+    auto_clear: true
+    auto_clear_condition: "连续收到3帧有效数据后自动清除"
+    # 诊断信息
+    diagnostic_message: "CAN通信中断，请检查CAN线缆连接、终端电阻、CAN卡状态及设备供电"
+
+  # 规则2: 数据质量下降告警
+  - rule_id: "GLOBAL_DATA_QUALITY"
+    name: "data_quality_degraded"
+    description: "数据质量下降检测 - 校验错误率超过阈值或数据帧丢失率异常"
+    alarm_level: "MAJOR"
+    # 触发条件
+    condition:
+      checksum_error_rate_percent: 5.0    # 校验错误率超过5%
+      frame_loss_rate_percent: 10.0       # 帧丢失率超过10%
+      evaluation_window_seconds: 60       # 评估时间窗口(秒)
+    auto_clear: true
+    auto_clear_condition: "校验错误率和帧丢失率均低于2%持续30秒后自动清除"
+    diagnostic_message: "CAN总线数据质量下降，可能存在电磁干扰或总线负载过高，建议检查总线终端匹配和屏蔽接地"
+
+# ---------- 告警通知配置 ----------
+notification:
+  # 是否启用声音告警
+  enable_sound: true
+  # 告警提示音文件路径（WAV格式）
+  sound_file: "Resources/Sounds/alarm.wav"
+  # 是否在系统托盘中闪烁提示
+  enable_tray_blink: true
+  # 是否记录告警到Windows事件日志
+  enable_windows_event_log: false
+  # 告警日志数据库表名
+  log_table: "alarm_log"

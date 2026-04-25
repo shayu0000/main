@@ -1,0 +1,84 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "E:\\Projects\\Charge And Discharge\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj|e:\\projects\\charge and discharge\\src\\chargedischargesystem.app\\views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj|solutionrelative:src\\chargedischargesystem.app\\views\\loginview.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj|e:\\projects\\charge and discharge\\src\\chargedischargesystem.app\\loginwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj|solutionrelative:src\\chargedischargesystem.app\\loginwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj|e:\\projects\\charge and discharge\\src\\chargedischargesystem.app\\views\\registerdialog.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj|solutionrelative:src\\chargedischargesystem.app\\views\\registerdialog.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj|e:\\projects\\charge and discharge\\src\\chargedischargesystem.app\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj|solutionrelative:src\\chargedischargesystem.app\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 1,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "RegisterDialog.xaml",
+              "DocumentMoniker": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\Views\\RegisterDialog.xaml",
+              "RelativeDocumentMoniker": "src\\ChargeDischargeSystem.App\\Views\\RegisterDialog.xaml",
+              "ToolTip": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\Views\\RegisterDialog.xaml",
+              "RelativeToolTip": "src\\ChargeDischargeSystem.App\\Views\\RegisterDialog.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-04-25T03:50:08.562Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LoginView.xaml",
+              "DocumentMoniker": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\Views\\LoginView.xaml",
+              "RelativeDocumentMoniker": "src\\ChargeDischargeSystem.App\\Views\\LoginView.xaml",
+              "ToolTip": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\Views\\LoginView.xaml",
+              "RelativeToolTip": "src\\ChargeDischargeSystem.App\\Views\\LoginView.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-04-25T01:59:30.474Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "LoginWindow.xaml",
+              "DocumentMoniker": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\LoginWindow.xaml",
+              "RelativeDocumentMoniker": "src\\ChargeDischargeSystem.App\\LoginWindow.xaml",
+              "ToolTip": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\LoginWindow.xaml",
+              "RelativeToolTip": "src\\ChargeDischargeSystem.App\\LoginWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-04-25T01:58:26.088Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "App.xaml",
+              "DocumentMoniker": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\App.xaml",
+              "RelativeDocumentMoniker": "src\\ChargeDischargeSystem.App\\App.xaml",
+              "ToolTip": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\App.xaml",
+              "RelativeToolTip": "src\\ChargeDischargeSystem.App\\App.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2026-04-25T00:34:46.986Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

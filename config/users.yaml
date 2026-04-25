@@ -1,0 +1,252 @@
+# ============================================================
+# MW级充放电上位机系统 - 用户权限初始配置文件
+# 文件名: config/users.yaml
+# 格式: YAML
+# 说明: 定义系统角色、权限映射和预置用户账户。
+#       首次启动时，系统根据此文件初始化数据库中的角色和用户。
+#       密码使用 SHA-256 + Salt 哈希存储，此处密码为预设初始密码。
+#       部署后请立即修改所有默认密码！
+# ============================================================
+
+# ---------- 角色定义 ----------
+# 系统支持4种角色，按权限范围从高到低排列
+roles:
+
+  # 角色1: 管理员 - 拥有系统全部权限
+  - role_id: "ROLE_ADMIN"
+    role_name: "admin"
+    display_name: "管理员"
+    description: "系统管理员，拥有所有功能的完全访问权限"
+    priority: 1                     # 优先级数字（1=最高）
+    # 是否为系统内置角色（内置角色不可删除）
+    is_system: true
+    # 拥有所有权限: * 表示全部
+    permissions:
+      - "device:read"               # 设备监控(读取)
+      - "device:write"              # 设备管理(写入)
+      - "calibration:execute"       # 设备校准(执行)
+      - "protocol:read"             # 协议管理(读取)
+      - "protocol:write"            # 协议管理(写入)
+      - "data:read"                 # 数据记录(读取)
+      - "data:write"                # 数据记录(写入)
+      - "firmware:execute"          # 固件升级(执行)
+      - "fault:read"                # 故障录波(读取)
+      - "fault:write"               # 故障录波(写入)
+      - "user:read"                 # 用户管理(读取)
+      - "user:write"                # 用户管理(写入)
+      - "report:read"               # 测试报告(读取)
+      - "report:write"              # 测试报告(写入)
+      - "system:read"               # 系统设置(读取)
+      - "system:write"              # 系统设置(写入)
+
+  # 角色2: 工程师 - 拥有设备、校准、协议、固件、故障、报告相关权限
+  - role_id: "ROLE_ENGINEER"
+    role_name: "engineer"
+    display_name: "工程师"
+    description: "现场工程师，拥有设备调试、校准、协议配置、固件升级、故障诊断和报告生成权限"
+    priority: 2
+    is_system: true
+    permissions:
+      - "device:read"               # 设备监控(读取)
+      - "device:write"              # 设备管理(写入)
+      - "calibration:execute"       # 设备校准(执行)
+      - "protocol:read"             # 协议管理(读取)
+      - "protocol:write"            # 协议管理(写入)
+      - "data:read"                 # 数据记录(读取)
+      # 无 data:write 权限（不需要修改原始数据）
+      - "firmware:execute"          # 固件升级(执行)
+      - "fault:read"                # 故障录波(读取)
+      - "fault:write"               # 故障录波(写入，如添加故障注释)
+      # 无 user:read / user:write 权限（无法管理用户）
+      - "report:read"               # 测试报告(读取)
+      - "report:write"              # 测试报告(写入)
+      - "system:read"               # 系统设置(读取)
+      # 无 system:write 权限（无法修改系统核心配置）
+
+  # 角色3: 操作员 - 拥有设备监控只读权限和报告权限
+  - role_id: "ROLE_OPERATOR"
+    role_name: "operator"
+    display_name: "操作员"
+    description: "设备操作人员，拥有设备状态监控、数据查看和报告浏览权限，无修改权限"
+    priority: 3
+    is_system: true
+    permissions:
+      - "device:read"               # 设备监控(读取)
+      # 无 device:write 权限
+      # 无 calibration:execute 权限
+      - "protocol:read"             # 协议管理(读取)
+      # 无 protocol:write 权限
+      - "data:read"                 # 数据记录(读取)
+      # 无 data:write 权限
+      # 无 firmware:execute 权限
+      - "fault:read"                # 故障录波(读取)
+      # 无 fault:write 权限
+      # 无 user:read / user:write 权限
+      - "report:read"               # 测试报告(读取)
+      - "report:write"              # 测试报告(写入，如导出报告)
+      - "system:read"               # 系统设置(读取)
+      # 无 system:write 权限
+
+  # 角色4: 查看者 - 仅拥有只读权限（无报告生成）
+  - role_id: "ROLE_VIEWER"
+    role_name: "viewer"
+    display_name: "查看者"
+    description: "只读用户，仅可查看设备状态和实时数据，无法执行任何修改或导出操作"
+    priority: 4
+    is_system: true
+    permissions:
+      - "device:read"               # 设备监控(读取)
+      # 无 device:write 权限
+      # 无 calibration:execute 权限
+      - "protocol:read"             # 协议管理(读取)
+      # 无 protocol:write 权限
+      - "data:read"                 # 数据记录(读取)
+      # 无 data:write 权限
+      # 无 firmware:execute 权限
+      - "fault:read"                # 故障录波(读取)
+      # 无 fault:write 权限
+      # 无 user:read / user:write 权限
+      - "report:read"               # 测试报告(读取)
+      # 无 report:write 权限
+      - "system:read"               # 系统设置(读取)
+      # 无 system:write 权限
+
+# ---------- 预置用户账户 ----------
+# 系统首次初始化时自动创建的默认用户
+# ⚠️ 安全警告：部署后请立即修改以下默认密码！
+preset_users:
+
+  # 预置用户1: 管理员账户
+  - user_id: "U_ADMIN_001"
+    username: "admin"
+    # 初始密码: Admin@123456
+    # 注意：此密码为明文初始值，首次登录后系统会提示修改密码
+    # 实际存储时使用 SHA-256(password + salt) 哈希
+    password: "Admin@123456"
+    display_name: "系统管理员"
+    email: "admin@company.com"
+    phone: "13800000001"
+    role_id: "ROLE_ADMIN"
+    # 账户状态: active(活跃) / disabled(禁用) / locked(锁定)
+    status: "active"
+    # 首次登录必须修改密码
+    require_password_change: true
+
+  # 预置用户2: 工程师账户
+  - user_id: "U_ENG_001"
+    username: "engineer"
+    # 初始密码: Engineer@123456
+    # 注意：此密码为明文初始值，首次登录后系统会提示修改密码
+    password: "Engineer@123456"
+    display_name: "现场工程师"
+    email: "engineer@company.com"
+    phone: "13800000002"
+    role_id: "ROLE_ENGINEER"
+    status: "active"
+    require_password_change: true
+
+# ---------- 权限定义参考 ----------
+# 以下列出系统中可用的所有权限项，供管理员创建自定义角色时参考
+permission_definitions:
+  - name: "device:read"
+    description: "设备监控读取权限 - 查看设备实时状态、参数和数据曲线"
+    resource: "device"
+    action: "read"
+
+  - name: "device:write"
+    description: "设备管理写入权限 - 添加/删除/配置设备参数"
+    resource: "device"
+    action: "write"
+
+  - name: "calibration:execute"
+    description: "校准执行权限 - 执行设备零点校准、量程校准和温度校准"
+    resource: "calibration"
+    action: "execute"
+
+  - name: "protocol:read"
+    description: "协议查看权限 - 查看CAN通信协议定义和帧格式"
+    resource: "protocol"
+    action: "read"
+
+  - name: "protocol:write"
+    description: "协议编辑权限 - 修改和配置CAN通信协议参数"
+    resource: "protocol"
+    action: "write"
+
+  - name: "data:read"
+    description: "数据查看权限 - 查看历史数据记录和趋势分析"
+    resource: "data"
+    action: "read"
+
+  - name: "data:write"
+    description: "数据写入权限 - 导出/删除/清理数据记录"
+    resource: "data"
+    action: "write"
+
+  - name: "firmware:execute"
+    description: "固件升级权限 - 通过CAN总线对设备进行固件升级"
+    resource: "firmware"
+    action: "execute"
+
+  - name: "fault:read"
+    description: "故障查看权限 - 查看故障录波文件和分析结果"
+    resource: "fault"
+    action: "read"
+
+  - name: "fault:write"
+    description: "故障管理权限 - 添加故障注释、确认/清除故障记录"
+    resource: "fault"
+    action: "write"
+
+  - name: "user:read"
+    description: "用户查看权限 - 查看系统用户列表和角色信息"
+    resource: "user"
+    action: "read"
+
+  - name: "user:write"
+    description: "用户管理权限 - 创建/修改/删除用户和角色"
+    resource: "user"
+    action: "write"
+
+  - name: "report:read"
+    description: "报告查看权限 - 查看和预览测试报告"
+    resource: "report"
+    action: "read"
+
+  - name: "report:write"
+    description: "报告生成权限 - 生成、导出和打印测试报告"
+    resource: "report"
+    action: "write"
+
+  - name: "system:read"
+    description: "系统设置查看权限 - 查看系统配置参数"
+    resource: "system"
+    action: "read"
+
+  - name: "system:write"
+    description: "系统设置修改权限 - 修改系统全局配置参数"
+    resource: "system"
+    action: "write"
+
+# ---------- 密码策略 ----------
+password_policy:
+  # 密码最小长度
+  min_length: 8
+  # 是否要求包含大写字母
+  require_uppercase: true
+  # 是否要求包含小写字母
+  require_lowercase: true
+  # 是否要求包含数字
+  require_digit: true
+  # 是否要求包含特殊字符
+  require_special_char: true
+  # 密码有效期(天)，0表示永不过期
+  expiration_days: 90
+  # 密码历史记录数量（不能重复使用最近N次密码）
+  history_count: 5
+  # 最大登录失败次数
+  max_login_attempts: 5
+  # 账户锁定时间(分钟)
+  lockout_minutes: 30
+  # 会话超时时间(分钟) - 8小时无操作自动登出
+  session_timeout_minutes: 480

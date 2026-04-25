@@ -1,0 +1,225 @@
+<UserControl x:Class="ChargeDischargeSystem.App.Views.BatteryProtocolView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="900" d:DesignWidth="1160"
+             Background="{StaticResource BackgroundColor}">
+
+    <!-- ============================================================ -->
+    <!-- 电池协议管理页面                                             -->
+    <!-- ============================================================ -->
+    <Grid Margin="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ============================================================ -->
+        <!-- 左侧：电池协议列表                                           -->
+        <!-- ============================================================ -->
+        <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,8,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="电池协议列表" FontSize="16" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryColor}" Margin="0,0,0,12"/>
+
+                <!-- BMS 连接状态 -->
+                <Border Grid.Row="1" Padding="10" Margin="0,0,0,8"
+                        Background="{StaticResource BackgroundColor}" CornerRadius="4">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="12" Height="12" Margin="0,0,8,0">
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsBmsConnected}" Value="True">
+                                            <Setter Property="Fill" Value="{StaticResource SuccessColor}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsBmsConnected}" Value="False">
+                                            <Setter Property="Fill" Value="{StaticResource ErrorColor}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                        <TextBlock Text="{Binding BmsStatusMessage}"
+                                   Foreground="{StaticResource TextPrimaryColor}"
+                                   FontSize="13"/>
+                    </StackPanel>
+                </Border>
+
+                <ListBox Grid.Row="2"
+                         ItemsSource="{Binding ProtocolList}"
+                         SelectedItem="{Binding SelectedProtocol}"
+                         BorderThickness="0"
+                         Background="Transparent">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Padding="10,8" Margin="0,2" CornerRadius="4"
+                                    Background="{StaticResource BackgroundColor}">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding ProtocolName}"
+                                               FontSize="14" FontWeight="SemiBold"
+                                               Foreground="{StaticResource TextPrimaryColor}"/>
+                                    <TextBlock FontSize="11"
+                                               Foreground="{StaticResource TextSecondaryColor}">
+                                        <Run Text="{Binding BmsVendor, StringFormat='供应商: {0}'}"/>
+                                        <Run Text=" · "/>
+                                        <Run Text="{Binding ProtocolVersion, StringFormat='版本: {0}'}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,8,0,0">
+                    <Button Content="加载协议" Style="{StaticResource PrimaryButton}"
+                            Command="{Binding LoadProtocolCommand}"
+                            Padding="8,4" FontSize="12" Margin="2"/>
+                    <Button Content="保存" Style="{StaticResource SuccessButton}"
+                            Command="{Binding SaveProtocolCommand}"
+                            Padding="8,4" FontSize="12" Margin="2"/>
+                    <Button Content="刷新" Style="{StaticResource SecondaryButton}"
+                            Command="{Binding RefreshDataCommand}"
+                            Padding="8,4" FontSize="12" Margin="2"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ============================================================ -->
+        <!-- 右侧：电池包数据 + 单体电压列表                              -->
+        <!-- ============================================================ -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- 电池包数据卡片 -->
+            <Border Grid.Row="0" Style="{StaticResource CardBorder}" Margin="0,0,0,8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="电池包数据" FontSize="14" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryColor}" Margin="0,0,0,8"/>
+
+                    <UniformGrid Grid.Row="1" Columns="4">
+                        <!-- 总电压 -->
+                        <Border Margin="4" Padding="10"
+                                Background="{StaticResource BackgroundColor}" CornerRadius="4">
+                            <StackPanel>
+                                <TextBlock Text="总电压 (V)" Foreground="{StaticResource TextSecondaryColor}" FontSize="12"/>
+                                <TextBlock Text="{Binding PackTotalVoltage, StringFormat={}{0:F2} V}"
+                                           Foreground="{StaticResource TextPrimaryColor}"
+                                           FontSize="16" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 总电流 -->
+                        <Border Margin="4" Padding="10"
+                                Background="{StaticResource BackgroundColor}" CornerRadius="4">
+                            <StackPanel>
+                                <TextBlock Text="总电流 (A)" Foreground="{StaticResource TextSecondaryColor}" FontSize="12"/>
+                                <TextBlock Text="{Binding PackTotalCurrent, StringFormat={}{0:F2} A}"
+                                           Foreground="{StaticResource TextPrimaryColor}"
+                                           FontSize="16" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- SOC -->
+                        <Border Margin="4" Padding="10"
+                                Background="{StaticResource BackgroundColor}" CornerRadius="4">
+                            <StackPanel>
+                                <TextBlock Text="SOC (%)" Foreground="{StaticResource TextSecondaryColor}" FontSize="12"/>
+                                <TextBlock Text="{Binding PackSoc, StringFormat={}{0:F1} %}"
+                                           Foreground="{StaticResource TextPrimaryColor}"
+                                           FontSize="16" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- SOH -->
+                        <Border Margin="4" Padding="10"
+                                Background="{StaticResource BackgroundColor}" CornerRadius="4">
+                            <StackPanel>
+                                <TextBlock Text="SOH (%)" Foreground="{StaticResource TextSecondaryColor}" FontSize="12"/>
+                                <TextBlock Text="{Binding PackSoh, StringFormat={}{0:F1} %}"
+                                           Foreground="{StaticResource TextPrimaryColor}"
+                                           FontSize="16" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 最高温度 -->
+                        <Border Margin="4" Padding="10"
+                                Background="{StaticResource BackgroundColor}" CornerRadius="4">
+                            <StackPanel>
+                                <TextBlock Text="最高温度 (°C)" Foreground="{StaticResource TextSecondaryColor}" FontSize="12"/>
+                                <TextBlock Text="{Binding PackMaxTemperature, StringFormat={}{0:F1} °C}"
+                                           Foreground="{StaticResource TextPrimaryColor}"
+                                           FontSize="16" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 单体最高电压 -->
+                        <Border Margin="4" Padding="10"
+                                Background="{StaticResource BackgroundColor}" CornerRadius="4">
+                            <StackPanel>
+                                <TextBlock Text="单体最高电压 (V)" Foreground="{StaticResource TextSecondaryColor}" FontSize="12"/>
+                                <TextBlock Text="{Binding PackMaxCellVoltage, StringFormat={}{0:F3} V}"
+                                           Foreground="{StaticResource TextPrimaryColor}"
+                                           FontSize="16" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- 单体最低电压 -->
+                        <Border Margin="4" Padding="10"
+                                Background="{StaticResource BackgroundColor}" CornerRadius="4">
+                            <StackPanel>
+                                <TextBlock Text="单体最低电压 (V)" Foreground="{StaticResource TextSecondaryColor}" FontSize="12"/>
+                                <TextBlock Text="{Binding PackMinCellVoltage, StringFormat={}{0:F3} V}"
+                                           Foreground="{StaticResource TextPrimaryColor}"
+                                           FontSize="16" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Border>
+                    </UniformGrid>
+                </Grid>
+            </Border>
+
+            <!-- 单体电压列表 -->
+            <Border Grid.Row="1" Style="{StaticResource CardBorder}" Margin="0,8,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="单体电芯数据" FontSize="14" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryColor}" Margin="0,0,0,8"/>
+
+                    <DataGrid Grid.Row="1"
+                              ItemsSource="{Binding CellDataList}"
+                              Style="{StaticResource MaterialDataGrid}"
+                              AutoGenerateColumns="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="单体编号" Binding="{Binding CellIndex}" Width="80"/>
+                            <DataGridTextColumn Header="电压 (V)" Binding="{Binding Voltage, StringFormat={}{0:F3}}" Width="120"/>
+                            <DataGridTextColumn Header="温度 (°C)" Binding="{Binding Temperature, StringFormat={}{0:F1}}" Width="120"/>
+                            <DataGridTextColumn Header="均衡状态" Binding="{Binding BalancingStatus}" Width="80"/>
+                            <DataGridTextColumn Header="数据质量" Binding="{Binding Quality}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

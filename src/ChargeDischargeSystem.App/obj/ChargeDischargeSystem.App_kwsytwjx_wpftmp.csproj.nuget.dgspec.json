@@ -1,0 +1,489 @@
+{
+  "format": 1,
+  "restore": {
+    "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj": {}
+  },
+  "projects": {
+    "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj",
+        "projectName": "ChargeDischargeSystem.App",
+        "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\ChargeDischargeSystem.App.csproj",
+        "packagesPath": "C:\\Users\\yongh\\.nuget\\packages\\",
+        "outputPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.App\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\yongh\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Common\\ChargeDischargeSystem.Common.csproj": {
+                "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Common\\ChargeDischargeSystem.Common.csproj"
+              },
+              "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Core\\ChargeDischargeSystem.Core.csproj": {
+                "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Core\\ChargeDischargeSystem.Core.csproj"
+              },
+              "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Hardware\\ChargeDischargeSystem.Hardware.csproj": {
+                "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Hardware\\ChargeDischargeSystem.Hardware.csproj"
+              },
+              "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Models\\ChargeDischargeSystem.Models.csproj": {
+                "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Models\\ChargeDischargeSystem.Models.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "dependencies": {
+            "CommunityToolkit.Mvvm": {
+              "target": "Package",
+              "version": "[8.2.2, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "OxyPlot.Wpf": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "YamlDotNet": {
+              "target": "Package",
+              "version": "[15.1.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WPF": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Common\\ChargeDischargeSystem.Common.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Common\\ChargeDischargeSystem.Common.csproj",
+        "projectName": "ChargeDischargeSystem.Common",
+        "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Common\\ChargeDischargeSystem.Common.csproj",
+        "packagesPath": "C:\\Users\\yongh\\.nuget\\packages\\",
+        "outputPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Common\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\yongh\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.3, )"
+            },
+            "YamlDotNet": {
+              "target": "Package",
+              "version": "[15.1.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Core\\ChargeDischargeSystem.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Core\\ChargeDischargeSystem.Core.csproj",
+        "projectName": "ChargeDischargeSystem.Core",
+        "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Core\\ChargeDischargeSystem.Core.csproj",
+        "packagesPath": "C:\\Users\\yongh\\.nuget\\packages\\",
+        "outputPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\yongh\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Common\\ChargeDischargeSystem.Common.csproj": {
+                "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Common\\ChargeDischargeSystem.Common.csproj"
+              },
+              "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Data\\ChargeDischargeSystem.Data.csproj": {
+                "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Data\\ChargeDischargeSystem.Data.csproj"
+              },
+              "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Hardware\\ChargeDischargeSystem.Hardware.csproj": {
+                "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Hardware\\ChargeDischargeSystem.Hardware.csproj"
+              },
+              "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Models\\ChargeDischargeSystem.Models.csproj": {
+                "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Models\\ChargeDischargeSystem.Models.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "dependencies": {
+            "CommunityToolkit.Mvvm": {
+              "target": "Package",
+              "version": "[8.2.2, )"
+            },
+            "YamlDotNet": {
+              "target": "Package",
+              "version": "[15.1.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WPF": {
+              "privateAssets": "none"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Data\\ChargeDischargeSystem.Data.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Data\\ChargeDischargeSystem.Data.csproj",
+        "projectName": "ChargeDischargeSystem.Data",
+        "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Data\\ChargeDischargeSystem.Data.csproj",
+        "packagesPath": "C:\\Users\\yongh\\.nuget\\packages\\",
+        "outputPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Data\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\yongh\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Common\\ChargeDischargeSystem.Common.csproj": {
+                "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Common\\ChargeDischargeSystem.Common.csproj"
+              },
+              "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Models\\ChargeDischargeSystem.Models.csproj": {
+                "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Models\\ChargeDischargeSystem.Models.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.1.28, )"
+            },
+            "Microsoft.Data.Sqlite": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Hardware\\ChargeDischargeSystem.Hardware.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Hardware\\ChargeDischargeSystem.Hardware.csproj",
+        "projectName": "ChargeDischargeSystem.Hardware",
+        "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Hardware\\ChargeDischargeSystem.Hardware.csproj",
+        "packagesPath": "C:\\Users\\yongh\\.nuget\\packages\\",
+        "outputPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Hardware\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\yongh\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Models\\ChargeDischargeSystem.Models.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Models\\ChargeDischargeSystem.Models.csproj",
+        "projectName": "ChargeDischargeSystem.Models",
+        "projectPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Models\\ChargeDischargeSystem.Models.csproj",
+        "packagesPath": "C:\\Users\\yongh\\.nuget\\packages\\",
+        "outputPath": "E:\\Projects\\Charge And Discharge\\src\\ChargeDischargeSystem.Models\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\yongh\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "10.0.200"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
