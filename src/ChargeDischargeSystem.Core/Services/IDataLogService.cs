@@ -43,15 +43,15 @@ namespace ChargeDischargeSystem.Core.Services
 
         /// <summary>
         /// 查询历史数据
-        /// 按照设备、参数、时间区间和聚合方式查询测量数据
+        /// 按照设备、参数列表、时间区间和聚合方式查询测量数据
         /// </summary>
         /// <param name="deviceId">设备ID</param>
-        /// <param name="parameterName">参数名称（voltage/current/temperature/soc/power）</param>
+        /// <param name="parameterNames">参数名称列表（voltage/current/temperature/soc/power）</param>
         /// <param name="startTime">查询起始时间（Unix毫秒时间戳）</param>
         /// <param name="endTime">查询结束时间（Unix毫秒时间戳）</param>
         /// <param name="aggregation">聚合方式: none(原始值)/avg(均值)/min(最小值)/max(最大值)</param>
         /// <returns>满足条件的测量数据列表</returns>
-        List<MeasurementData> QueryData(string deviceId, string parameterName, long startTime, long endTime, string aggregation = "none");
+        List<MeasurementData> QueryData(string deviceId, List<string> parameterNames, long startTime, long endTime, string aggregation = "none");
 
         /// <summary>
         /// 获取记录会话列表

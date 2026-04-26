@@ -7,27 +7,36 @@ using ChargeDischargeSystem.Common.Constants;
 using ChargeDischargeSystem.Common.Helpers;
 using ChargeDischargeSystem.Core.Models;
 using ChargeDischargeSystem.Data.Database;
+using ChargeDischargeSystem.Data.Repositories;
 
 // ============================================================
 // 命名空间: ChargeDischargeSystem.Core.Services
 // 功能描述: 数据记录服务实现类
 // 说明: 实现测量数据的实时记录、批量写入和自动备份功能
-//       使用DataBuffer缓冲区优化写入性能，支持定时刷新和自动备份
+//       使用 DataBuffer 缓冲区优化写入性能，支持定时刷新和自动备份
+//       每次数据库事务最多写入 1000 条记录
 // ============================================================
 namespace ChargeDischargeSystem.Core.Services
 {
     /// <summary>
     /// 数据记录服务实现类
     /// 负责充放电系统中所有测量数据的记录和管理：
-    ///   1. 实时记录：将设备上报的数据缓存到DataBuffer中
-    ///   2. 批量写入：定时将缓冲区中的数据批量写入SQLite数据库
-    ///   3. 数据查询：支持按时间范围、聚合方式查询历史数据
+    ///   1. 实时记录：将设备上报的数据缓存到 DataBuffer 中，支持按数据类型过滤
+    ///   2. 批量写入：定时将缓冲区中的数据分批写入 SQLite 数据库，每事务最多 1000 条
+    ///   3. 数据查询：支持按时间范围、多参数、聚合方式查询历史数据
     ///   4. 自动备份：按配置的间隔定期备份数据库文件
     ///   5. 数据清理：删除过期的旧数据以释放存储空间
     /// </summary>
     public class DataLogService : IDataLogService, IDisposable
     {
-        #region -- 字段定义 --
+        #region -- 常量 --
+
+        /// <summary>单次数据库事务最大写入记录数</summary>
+        private const int MaxBatchSize = 1000;
+
+        #endregion
+
+        #region -- 依赖注入 --
 
         /// <summary>设备监控服务引用</summary>
         private readonly IDeviceMonitorService _monitorService;
@@ -35,8 +44,25 @@ namespace ChargeDischargeSystem.Core.Services
         /// <summary>应用程序配置引用</summary>
         private readonly AppConfig _appConfig;
 
+        /// <summary>测量数据仓库</summary>
+        private readonly MeasurementRepository _measurementRepo;
+
+        /// <summary>充放电会话仓库</summary>
+        private readonly SessionRepository _sessionRepo;
+
+        #endregion
+
+        #region -- 缓冲区 --
+
         /// <summary>数据缓冲区（批量写入优化）</summary>
-        private readonly DataBuffer<MeasurementData> _dataBuffer;
+        private DataBuffer<MeasurementData> _dataBuffer;
+
+        /// <summary>缓冲区刷新互斥锁（防止并发刷新）</summary>
+        private readonly object _flushLock = new object();
+
+        #endregion
+
+        #region -- 定时器 --
 
         /// <summary>缓冲区刷新定时器</summary>
         private Timer _flushTimer;
@@ -47,14 +73,27 @@ namespace ChargeDischargeSystem.Core.Services
         /// <summary>定时器取消令牌</summary>
         private CancellationTokenSource _cts;
 
+        #endregion
+
+        #region -- 状态 --
+
         /// <summary>当前活跃的会话ID</summary>
         private string _activeSessionId;
 
+        /// <summary>本次记录的数据类型集合（null 表示记录全部类型）</summary>
+        private HashSet<string> _recordedDataTypes;
+
+        /// <summary>采样间隔（毫秒）</summary>
+        private int _sampleIntervalMs;
+
+        /// <summary>上次采样时的时间戳（用于采样间隔控制）</summary>
+        private long _lastSampleTime;
+
         /// <summary>记录状态</summary>
-        private bool _isRecording;
+        private volatile bool _isRecording;
 
         /// <summary>对象销毁标志</summary>
-        private bool _isDisposed;
+        private volatile bool _isDisposed;
 
         /// <summary>事件操作锁</summary>
         private readonly object _eventLock = new object();
@@ -73,13 +112,18 @@ namespace ChargeDischargeSystem.Core.Services
         /// </summary>
         /// <param name="monitorService">设备监控服务</param>
         /// <param name="appConfig">应用程序配置</param>
-        public DataLogService(IDeviceMonitorService monitorService, AppConfig appConfig)
+        /// <param name="measurementRepo">测量数据仓库</param>
+        /// <param name="sessionRepo">充放电会话仓库</param>
+        public DataLogService(
+            IDeviceMonitorService monitorService,
+            AppConfig appConfig,
+            MeasurementRepository measurementRepo,
+            SessionRepository sessionRepo)
         {
             _monitorService = monitorService ?? throw new ArgumentNullException(nameof(monitorService));
             _appConfig = appConfig ?? throw new ArgumentNullException(nameof(appConfig));
-
-            int bufferSize = appConfig.DataLogging?.BufferMaxSize ?? DataLogConstants.MaxBufferSize;
-            _dataBuffer = new DataBuffer<MeasurementData>(bufferSize);
+            _measurementRepo = measurementRepo ?? throw new ArgumentNullException(nameof(measurementRepo));
+            _sessionRepo = sessionRepo ?? throw new ArgumentNullException(nameof(sessionRepo));
         }
 
         #region -- 记录会话管理 --
@@ -89,8 +133,8 @@ namespace ChargeDischargeSystem.Core.Services
         /// 初始化数据缓冲区并启动定时刷新和备份机制
         /// </summary>
         /// <param name="sessionId">会话ID</param>
-        /// <param name="dataTypes">要记录的数据类型</param>
-        /// <param name="sampleIntervalMs">采样间隔</param>
+        /// <param name="dataTypes">要记录的数据类型（null 表示记录全部），可选值: voltage/current/temperature/soc/power</param>
+        /// <param name="sampleIntervalMs">采样间隔（毫秒），默认 1000ms</param>
         /// <returns>启动是否成功</returns>
         public bool StartRecording(string sessionId, List<string> dataTypes = null, int sampleIntervalMs = 1000)
         {
@@ -106,12 +150,25 @@ namespace ChargeDischargeSystem.Core.Services
             try
             {
                 _activeSessionId = sessionId;
+                _sampleIntervalMs = sampleIntervalMs;
+                _lastSampleTime = 0;
+
+                // 构建数据类型过滤集合
+                if (dataTypes != null && dataTypes.Count > 0)
+                    _recordedDataTypes = new HashSet<string>(dataTypes, StringComparer.OrdinalIgnoreCase);
+                else
+                    _recordedDataTypes = null;
+
+                // 初始化数据缓冲区
+                int bufferSize = _appConfig.DataLogging?.BufferMaxSize ?? DataLogConstants.MaxBufferSize;
+                _dataBuffer = new DataBuffer<MeasurementData>(bufferSize);
+
                 _cts = new CancellationTokenSource();
 
                 // 订阅设备数据更新事件
                 _monitorService.OnDataUpdated += HandleDataUpdated;
 
-                // 启动缓冲区刷新定时器（默认5秒刷新一次）
+                // 启动缓冲区刷新定时器（默认5000ms刷新一次）
                 int flushIntervalMs = _appConfig.DataLogging?.FlushIntervalMs ?? DataLogConstants.FlushIntervalMs;
                 _flushTimer = new Timer(OnFlushTimerTick, null, flushIntervalMs, flushIntervalMs);
 
@@ -160,6 +217,8 @@ namespace ChargeDischargeSystem.Core.Services
 
                 _isRecording = false;
                 _activeSessionId = null;
+                _recordedDataTypes = null;
+                _dataBuffer = null;
 
                 OnRecordingStatusChanged?.Invoke(sessionId, "Stopped");
                 System.Diagnostics.Debug.WriteLine($"[DataLogService] 数据记录已停止: {sessionId}");
@@ -178,45 +237,80 @@ namespace ChargeDischargeSystem.Core.Services
 
         /// <summary>
         /// 查询历史测量数据
+        /// 支持按设备、多个参数名称、时间范围和聚合方式查询
         /// </summary>
         /// <param name="deviceId">设备ID</param>
-        /// <param name="parameterName">参数名称</param>
-        /// <param name="startTime">起始时间</param>
-        /// <param name="endTime">结束时间</param>
-        /// <param name="aggregation">聚合方式</param>
+        /// <param name="parameterNames">参数名称列表（voltage/current/temperature/soc/power）</param>
+        /// <param name="startTime">起始时间（Unix毫秒时间戳）</param>
+        /// <param name="endTime">结束时间（Unix毫秒时间戳）</param>
+        /// <param name="aggregation">聚合方式: none(原始值)/avg(均值)/min(最小值)/max(最大值)</param>
         /// <returns>测量数据列表</returns>
-        public List<MeasurementData> QueryData(string deviceId, string parameterName,
+        public List<MeasurementData> QueryData(string deviceId, List<string> parameterNames,
             long startTime, long endTime, string aggregation = "none")
         {
-            // TODO: 注入MeasurementRepository进行数据库查询
-            System.Diagnostics.Debug.WriteLine(
-                $"[DataLogService] 查询数据: {deviceId}.{parameterName}, {startTime}~{endTime}, 聚合={aggregation}");
-            return new List<MeasurementData>();
+            if (string.IsNullOrEmpty(deviceId))
+                throw new ArgumentException("设备ID不能为空", nameof(deviceId));
+            if (parameterNames == null || parameterNames.Count == 0)
+                return new List<MeasurementData>();
+
+            try
+            {
+                var results = new List<MeasurementData>();
+                foreach (var paramName in parameterNames)
+                {
+                    if (string.IsNullOrEmpty(paramName)) continue;
+                    var queryResults = _measurementRepo.QueryMeasurements(
+                        deviceId, paramName, startTime, endTime, aggregation);
+                    if (queryResults != null && queryResults.Count > 0)
+                        results.AddRange(queryResults);
+                }
+                return results;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DataLogService] 查询数据失败: {ex.Message}");
+                return new List<MeasurementData>();
+            }
         }
 
         /// <summary>
         /// 获取记录会话列表
+        /// 查询指定时间范围内开始或结束的充放电会话
         /// </summary>
-        /// <param name="startTime">起始时间</param>
-        /// <param name="endTime">结束时间</param>
+        /// <param name="startTime">起始时间（Unix毫秒时间戳）</param>
+        /// <param name="endTime">结束时间（Unix毫秒时间戳）</param>
         /// <returns>会话列表</returns>
         public List<ChargeSession> GetSessionList(long startTime, long endTime)
         {
-            // TODO: 注入ChargeSessionRepository查询
-            System.Diagnostics.Debug.WriteLine($"[DataLogService] 查询会话列表: {startTime}~{endTime}");
-            return new List<ChargeSession>();
+            try
+            {
+                return _sessionRepo.GetSessionHistory(startTime, endTime);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DataLogService] 查询会话列表失败: {ex.Message}");
+                return new List<ChargeSession>();
+            }
         }
 
         /// <summary>
         /// 删除指定时间之前的旧数据
+        /// 用于定期清理过期测量数据，防止数据库文件无限增长
         /// </summary>
-        /// <param name="beforeTime">删除此时间之前的数据</param>
+        /// <param name="beforeTime">删除此时间之前的数据（Unix毫秒时间戳）</param>
         /// <returns>删除的数据条数</returns>
         public long DeleteOldData(long beforeTime)
         {
-            // TODO: 注入MeasurementRepository执行DELETE操作
-            System.Diagnostics.Debug.WriteLine($"[DataLogService] 删除旧数据: before={beforeTime}");
-            return 0;
+            try
+            {
+                int deleted = _measurementRepo.DeleteOldData(beforeTime);
+                return deleted >= 0 ? deleted : 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"[DataLogService] 删除旧数据失败: {ex.Message}");
+                return 0;
+            }
         }
 
         #endregion
@@ -225,35 +319,63 @@ namespace ChargeDischargeSystem.Core.Services
 
         /// <summary>
         /// 处理设备数据更新事件
-        /// 将最新的设备数据转换为MeasurementData并加入缓冲区
+        /// 将最新的设备数据转换为 MeasurementData 并加入缓冲区，按数据类型过滤
         /// </summary>
         /// <param name="dataPoints">设备数据点字典</param>
         private void HandleDataUpdated(Dictionary<string, DeviceDataPoint> dataPoints)
         {
-            if (!_isRecording || dataPoints == null) return;
+            if (!_isRecording || dataPoints == null || dataPoints.Count == 0)
+                return;
 
             long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+
+            // 采样间隔控制：未达到采样间隔则跳过本次数据
+            if (_sampleIntervalMs > 0)
+            {
+                long prev = Interlocked.Read(ref _lastSampleTime);
+                if (now - prev < _sampleIntervalMs)
+                    return;
+                Interlocked.Exchange(ref _lastSampleTime, now);
+            }
 
             foreach (var kvp in dataPoints)
             {
                 var dp = kvp.Value;
+                var measurements = new List<MeasurementData>(5);
 
-                // 创建多条测量数据记录（每个参数一条）
-                var measurements = new List<MeasurementData>
+                // 仅在数据类型过滤集合允许时添加对应测量项
+                void AddIfAllowed(string paramName, double value, string unit)
                 {
-                    new MeasurementData { Timestamp = now, DeviceId = dp.DeviceId, SessionId = _activeSessionId, ParameterName = "voltage", Value = dp.Voltage, Unit = "V", Quality = dp.Quality },
-                    new MeasurementData { Timestamp = now, DeviceId = dp.DeviceId, SessionId = _activeSessionId, ParameterName = "current", Value = dp.Current, Unit = "A", Quality = dp.Quality },
-                    new MeasurementData { Timestamp = now, DeviceId = dp.DeviceId, SessionId = _activeSessionId, ParameterName = "temperature", Value = dp.Temperature, Unit = "°C", Quality = dp.Quality },
-                    new MeasurementData { Timestamp = now, DeviceId = dp.DeviceId, SessionId = _activeSessionId, ParameterName = "soc", Value = dp.Soc, Unit = "%", Quality = dp.Quality },
-                    new MeasurementData { Timestamp = now, DeviceId = dp.DeviceId, SessionId = _activeSessionId, ParameterName = "power", Value = dp.Power, Unit = "kW", Quality = dp.Quality }
-                };
+                    if (_recordedDataTypes == null || _recordedDataTypes.Contains(paramName))
+                    {
+                        measurements.Add(new MeasurementData
+                        {
+                            Timestamp = now,
+                            DeviceId = dp.DeviceId,
+                            SessionId = _activeSessionId,
+                            ParameterName = paramName,
+                            Value = value,
+                            Unit = unit,
+                            Quality = dp.Quality ?? "GOOD"
+                        });
+                    }
+                }
 
-                _dataBuffer.AddRange(measurements);
+                AddIfAllowed("voltage", dp.Voltage, "V");
+                AddIfAllowed("current", dp.Current, "A");
+                AddIfAllowed("temperature", dp.Temperature, "°C");
+                AddIfAllowed("soc", dp.Soc, "%");
+                AddIfAllowed("power", dp.Power, "kW");
 
-                // 缓冲区满时立即刷新
-                if (_dataBuffer.IsFull)
+                if (measurements.Count > 0)
                 {
-                    FlushBufferToDatabase();
+                    _dataBuffer.AddRange(measurements);
+
+                    // 缓冲区满时立即刷新
+                    if (_dataBuffer.IsFull)
+                    {
+                        FlushBufferToDatabase();
+                    }
                 }
             }
         }
@@ -269,21 +391,43 @@ namespace ChargeDischargeSystem.Core.Services
 
         /// <summary>
         /// 将缓冲区中的数据批量写入数据库
+        /// 每次数据库事务最多写入 MaxBatchSize（1000）条记录
         /// </summary>
         private void FlushBufferToDatabase()
         {
-            var data = _dataBuffer.Flush();
-            if (data.Count == 0) return;
+            if (_dataBuffer == null) return;
+
+            List<MeasurementData> batch;
+            lock (_flushLock)
+            {
+                if (_dataBuffer.Count == 0) return;
+                batch = _dataBuffer.Flush();
+            }
+
+            if (batch == null || batch.Count == 0) return;
 
             try
             {
-                // TODO: 注入MeasurementRepository并调用 BulkInsertAsync(data)
-                System.Diagnostics.Debug.WriteLine($"[DataLogService] 缓冲区刷新: {data.Count} 条数据");
+                // 分批写入，每事务最多 MaxBatchSize 条
+                for (int i = 0; i < batch.Count; i += MaxBatchSize)
+                {
+                    int chunkSize = Math.Min(MaxBatchSize, batch.Count - i);
+                    var chunk = batch.GetRange(i, chunkSize);
+                    int inserted = _measurementRepo.InsertMeasurementsBatch(chunk);
+                    if (inserted < 0)
+                    {
+                        System.Diagnostics.Debug.WriteLine(
+                            $"[DataLogService] 批量插入失败: chunk起始={i}, chunk大小={chunkSize}");
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine(
+                    $"[DataLogService] 缓冲区刷新: {batch.Count} 条数据");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[DataLogService] 缓冲区刷新失败: {ex.Message}");
-                // 刷新失败时数据会丢失，可根据业务需求加入重试或持久化机制
+                System.Diagnostics.Debug.WriteLine(
+                    $"[DataLogService] 缓冲区刷新失败: {ex.Message}");
             }
         }
 
@@ -315,22 +459,22 @@ namespace ChargeDischargeSystem.Core.Services
                 string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                 string backupFile = Path.Combine(backupDir, $"mw_scada_backup_{timestamp}.db");
 
-                // 使用DatabaseManager的在线备份功能
                 DatabaseManager.Instance.BackupDatabase(backupFile);
 
-                System.Diagnostics.Debug.WriteLine($"[DataLogService] 数据库备份完成: {backupFile}");
+                System.Diagnostics.Debug.WriteLine(
+                    $"[DataLogService] 数据库备份完成: {backupFile}");
 
-                // 清理旧备份（保留最近5个）
                 CleanOldBackups(backupDir, 5);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[DataLogService] 数据库备份失败: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine(
+                    $"[DataLogService] 数据库备份失败: {ex.Message}");
             }
         }
 
         /// <summary>
-        /// 清理旧备份文件，保留最近N个
+        /// 清理旧备份文件，保留最近 N 个
         /// </summary>
         /// <param name="backupDir">备份目录</param>
         /// <param name="keepCount">保留数量</param>
@@ -341,7 +485,6 @@ namespace ChargeDischargeSystem.Core.Services
                 var files = Directory.GetFiles(backupDir, "mw_scada_backup_*.db");
                 if (files.Length <= keepCount) return;
 
-                // 按文件名排序（时间戳在文件名中），删除最旧的
                 Array.Sort(files);
                 for (int i = 0; i < files.Length - keepCount; i++)
                 {
@@ -350,7 +493,8 @@ namespace ChargeDischargeSystem.Core.Services
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"[DataLogService] 清理旧备份失败: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine(
+                    $"[DataLogService] 清理旧备份失败: {ex.Message}");
             }
         }
 

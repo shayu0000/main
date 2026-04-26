@@ -8,26 +8,72 @@
              Background="{StaticResource BackgroundColor}">
 
     <Grid Margin="12">
-        <Border Background="{StaticResource SurfaceColor}"
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
+            <Button Content="开始记录" Command="{Binding StartRecordingCommand}" Style="{StaticResource PrimaryButton}" Padding="12,5" Margin="0,0,6,0"/>
+            <Button Content="停止记录" Command="{Binding StopRecordingCommand}" Style="{StaticResource SecondaryButton}" Padding="12,5"/>
+            <TextBlock Text="{Binding RecordingStatus}" FontSize="12" VerticalAlignment="Center" Margin="12,0" Foreground="{StaticResource TextSecondaryColor}"/>
+            <TextBlock Text="{Binding TotalRecords, StringFormat='总记录数: {0}'}" FontSize="12" VerticalAlignment="Center" Foreground="{StaticResource PrimaryColor}"/>
+        </StackPanel>
+
+        <Border Grid.Row="1" Background="{StaticResource SurfaceColor}"
+                BorderBrush="{StaticResource BorderColor}" BorderThickness="1" Margin="0,0,0,8" Padding="10">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="设备:" VerticalAlignment="Center" FontSize="13" Foreground="{StaticResource TextSecondaryColor}" Margin="0,0,4,0"/>
+                <ComboBox Text="{Binding SelectedDeviceId}" ItemsSource="{Binding DeviceIds}"
+                          Style="{StaticResource MaterialComboBox}" Width="120" Margin="0,0,8,0"/>
+                <TextBlock Text="参数:" VerticalAlignment="Center" FontSize="13" Foreground="{StaticResource TextSecondaryColor}" Margin="0,0,4,0"/>
+                <ComboBox Text="{Binding SelectedParameter}" ItemsSource="{Binding ParameterNames}"
+                          Style="{StaticResource MaterialComboBox}" Width="120" Margin="0,0,8,0"/>
+                <Button Content="查询" Command="{Binding QueryCommand}" Style="{StaticResource PrimaryButton}" Padding="10,4" Margin="0,0,6,0"/>
+                <Button Content="导出CSV" Command="{Binding ExportCsvCommand}" Style="{StaticResource SecondaryButton}" Padding="10,4"/>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="2" Background="{StaticResource SurfaceColor}"
+                BorderBrush="{StaticResource BorderColor}" BorderThickness="1" Margin="0,0,0,8" Padding="8">
+            <StackPanel>
+                <TextBlock Text="充放电会话" FontSize="14" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryColor}" Margin="0,0,0,6"/>
+                <DataGrid ItemsSource="{Binding SessionRecords}" Style="{StaticResource MaterialDataGrid}"
+                          AutoGenerateColumns="False" Height="120" Margin="0,0,0,4">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="会话ID" Binding="{Binding SessionId}" Width="*"/>
+                        <DataGridTextColumn Header="类型" Binding="{Binding SessionType}" Width="80"/>
+                        <DataGridTextColumn Header="设备" Binding="{Binding DeviceId}" Width="100"/>
+                        <DataGridTextColumn Header="开始时间" Binding="{Binding StartTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Width="140"/>
+                        <DataGridTextColumn Header="结束时间" Binding="{Binding EndTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Width="140"/>
+                        <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="80"/>
+                        <DataGridTextColumn Header="累计能量(kWh)" Binding="{Binding TotalEnergyKwh, StringFormat={}{0:F2}}" Width="100"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="3" Background="{StaticResource SurfaceColor}"
                 BorderBrush="{StaticResource BorderColor}" BorderThickness="1">
             <Grid Margin="12">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-
-                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,10">
-                    <Button Content="开始记录" Command="{Binding StartRecordingCommand}" Style="{StaticResource PrimaryButton}" Padding="12,5" Margin="0,0,6,0"/>
-                    <Button Content="停止记录" Command="{Binding StopRecordingCommand}" Style="{StaticResource SecondaryButton}" Padding="12,5"/>
-                </StackPanel>
-
-                <DataGrid Grid.Row="1" Style="{StaticResource MaterialDataGrid}">
+                <TextBlock Grid.Row="0" Text="测量数据" FontSize="14" FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryColor}" Margin="0,0,0,8"/>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding MeasurementRecords}" Style="{StaticResource MaterialDataGrid}"
+                          AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="时间" Width="140"/>
-                        <DataGridTextColumn Header="设备" Width="100"/>
-                        <DataGridTextColumn Header="电压(V)" Width="*"/>
-                        <DataGridTextColumn Header="电流(A)" Width="*"/>
-                        <DataGridTextColumn Header="功率(kW)" Width="*"/>
+                        <DataGridTextColumn Header="时间" Width="140" Binding="{Binding Timestamp, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
+                        <DataGridTextColumn Header="设备" Width="80" Binding="{Binding DeviceId}"/>
+                        <DataGridTextColumn Header="参数" Width="100" Binding="{Binding ParameterName}"/>
+                        <DataGridTextColumn Header="数值" Width="*" Binding="{Binding Value, StringFormat={}{0:F3}}"/>
+                        <DataGridTextColumn Header="单位" Width="50" Binding="{Binding Unit}"/>
+                        <DataGridTextColumn Header="质量" Width="60" Binding="{Binding Quality}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

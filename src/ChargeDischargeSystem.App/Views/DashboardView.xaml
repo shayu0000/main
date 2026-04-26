@@ -14,7 +14,6 @@
             <RowDefinition Height="180"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
         <Border Grid.Row="0" Background="{StaticResource SurfaceColor}"
                 BorderBrush="{StaticResource BorderColor}" BorderThickness="1" Margin="0,0,0,8" Padding="12,10">
             <Grid>
@@ -22,8 +21,16 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="AC模块状态" FontSize="16" FontWeight="SemiBold"
-                           Foreground="{StaticResource TextPrimaryColor}"/>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="AC模块状态" FontSize="16" FontWeight="SemiBold"
+                               Foreground="{StaticResource TextPrimaryColor}" VerticalAlignment="Center"/>
+                    <TextBlock Text=" | 设备数:" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" VerticalAlignment="Center" Margin="12,0,2,0"/>
+                    <TextBlock Text="{Binding TotalDevices}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center"/>
+                    <TextBlock Text=" 在线:" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" VerticalAlignment="Center" Margin="8,0,2,0"/>
+                    <TextBlock Text="{Binding OnlineDevices}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource SuccessColor}" VerticalAlignment="Center"/>
+                    <TextBlock Text=" 故障:" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" VerticalAlignment="Center" Margin="8,0,2,0"/>
+                    <TextBlock Text="{Binding FaultDevices}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource ErrorColor}" VerticalAlignment="Center"/>
+                </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal">
                     <Button Content="开始监控" Command="{Binding StartMonitoringCommand}" Style="{StaticResource SecondaryButton}" Padding="10,4" Margin="2,0"/>
                     <Button Content="停止监控" Command="{Binding StopMonitoringCommand}" Style="{StaticResource SecondaryButton}" Padding="10,4" Margin="2,0"/>
@@ -32,70 +39,58 @@
             </Grid>
         </Border>
 
-        <!-- Main Parameters -->
         <Border Grid.Row="1" Background="{StaticResource SurfaceColor}"
                 BorderBrush="{StaticResource BorderColor}" BorderThickness="1" Margin="0,0,0,8">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <Grid Margin="12">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/><RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/><ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Row 1 -->
                     <TextBlock Grid.Row="0" Grid.Column="0" Text="网侧A相电压" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="0" Grid.Column="1" Text="网侧B相电压" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="0" Grid.Column="2" Text="网侧C相电压" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="0" Grid.Column="3" Text="AC侧母线电压" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
-                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.00 V"/></Border>
-                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.00 V"/></Border>
-                    <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.00 V"/></Border>
-                    <Border Grid.Row="1" Grid.Column="3" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.000 V"/></Border>
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding GridPhaseAVoltage, StringFormat={}{0:F2} V}"/></Border>
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding GridPhaseBVoltage, StringFormat={}{0:F2} V}"/></Border>
+                    <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding GridPhaseCVoltage, StringFormat={}{0:F2} V}"/></Border>
+                    <Border Grid.Row="1" Grid.Column="3" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding AcBusVoltage, StringFormat={}{0:F3} V}"/></Border>
 
-                    <!-- Row 2 -->
                     <TextBlock Grid.Row="2" Grid.Column="0" Text="机侧A相电压" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="2" Grid.Column="1" Text="机侧B相电压" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="2" Grid.Column="2" Text="机侧C相电压" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="2" Grid.Column="3" Text="AC侧2母线电压" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
-                    <Border Grid.Row="3" Grid.Column="0" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.00 V"/></Border>
-                    <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.00 V"/></Border>
-                    <Border Grid.Row="3" Grid.Column="2" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.00 V"/></Border>
-                    <Border Grid.Row="3" Grid.Column="3" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.000 V"/></Border>
+                    <Border Grid.Row="3" Grid.Column="0" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding MachinePhaseAVoltage, StringFormat={}{0:F2} V}"/></Border>
+                    <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding MachinePhaseBVoltage, StringFormat={}{0:F2} V}"/></Border>
+                    <Border Grid.Row="3" Grid.Column="2" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding MachinePhaseCVoltage, StringFormat={}{0:F2} V}"/></Border>
+                    <Border Grid.Row="3" Grid.Column="3" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding AcBus2Voltage, StringFormat={}{0:F3} V}"/></Border>
 
-                    <!-- Row 3 -->
                     <TextBlock Grid.Row="4" Grid.Column="0" Text="A相电流" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="4" Grid.Column="1" Text="B相电流" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="4" Grid.Column="2" Text="C相电流" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="4" Grid.Column="3" Text="母线电压给定" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
-                    <Border Grid.Row="5" Grid.Column="0" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.0 A"/></Border>
-                    <Border Grid.Row="5" Grid.Column="1" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.0 A"/></Border>
-                    <Border Grid.Row="5" Grid.Column="2" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.0 A"/></Border>
-                    <Border Grid.Row="5" Grid.Column="3" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.0 V"/></Border>
+                    <Border Grid.Row="5" Grid.Column="0" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding PhaseACurrent, StringFormat={}{0:F1} A}"/></Border>
+                    <Border Grid.Row="5" Grid.Column="1" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding PhaseBCurrent, StringFormat={}{0:F1} A}"/></Border>
+                    <Border Grid.Row="5" Grid.Column="2" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding PhaseCCurrent, StringFormat={}{0:F1} A}"/></Border>
+                    <Border Grid.Row="5" Grid.Column="3" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding BusVoltageRef, StringFormat={}{0:F1} V}"/></Border>
 
-                    <!-- Row 4 -->
                     <TextBlock Grid.Row="6" Grid.Column="0" Text="A2相电流" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="6" Grid.Column="1" Text="B2相电流" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="6" Grid.Column="2" Text="C2相电流" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="6" Grid.Column="3" Text="功率因数" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
-                    <Border Grid.Row="7" Grid.Column="0" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.0 A"/></Border>
-                    <Border Grid.Row="7" Grid.Column="1" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.0 A"/></Border>
-                    <Border Grid.Row="7" Grid.Column="2" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0.0 A"/></Border>
-                    <Border Grid.Row="7" Grid.Column="3" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="0"/></Border>
+                    <Border Grid.Row="7" Grid.Column="0" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding PhaseA2Current, StringFormat={}{0:F1} A}"/></Border>
+                    <Border Grid.Row="7" Grid.Column="1" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding PhaseB2Current, StringFormat={}{0:F1} A}"/></Border>
+                    <Border Grid.Row="7" Grid.Column="2" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding PhaseC2Current, StringFormat={}{0:F1} A}"/></Border>
+                    <Border Grid.Row="7" Grid.Column="3" Style="{StaticResource ParameterBorder}" Margin="2"><TextBlock Text="{Binding PowerFactor, StringFormat={}{0:F3}}"/></Border>
 
-                    <!-- Row 5 -->
                     <TextBlock Grid.Row="8" Grid.Column="0" Text="AC有功功率" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="8" Grid.Column="1" Text="AC无功功率" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
                     <TextBlock Grid.Row="8" Grid.Column="2" Text="累计放电量" FontSize="12" Foreground="{StaticResource TextSecondaryColor}" Margin="4"/>
@@ -104,7 +99,6 @@
             </ScrollViewer>
         </Border>
 
-        <!-- Alarm List -->
         <Border Grid.Row="2" Background="{StaticResource SurfaceColor}"
                 BorderBrush="{StaticResource BorderColor}" BorderThickness="1">
             <Grid Margin="12">
@@ -114,11 +108,13 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="实时告警列表" FontSize="14" FontWeight="SemiBold"
                            Foreground="{StaticResource TextPrimaryColor}" Margin="0,0,0,8"/>
-                <DataGrid Grid.Row="1" Style="{StaticResource MaterialDataGrid}">
+                <DataGrid Grid.Row="1" ItemsSource="{Binding AlarmList}" Style="{StaticResource MaterialDataGrid}"
+                          AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="时间" Width="140"/>
-                        <DataGridTextColumn Header="类型" Width="80"/>
-                        <DataGridTextColumn Header="告警内容" Width="*"/>
+                        <DataGridTextColumn Header="时间" Width="140" Binding="{Binding RaisedAt, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}"/>
+                        <DataGridTextColumn Header="级别" Width="60" Binding="{Binding AlarmLevel}"/>
+                        <DataGridTextColumn Header="告警内容" Width="*" Binding="{Binding AlarmMessage}"/>
+                        <DataGridTextColumn Header="设备" Width="100" Binding="{Binding DeviceId}"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

@@ -5,6 +5,7 @@ using ChargeDischargeSystem.Data.Database;
 using ChargeDischargeSystem.Hardware.ZlgCanCard;
 using ChargeDischargeSystem.Hardware.Mock;
 using ChargeDischargeSystem.Core.Services;
+using ChargeDischargeSystem.Data.Repositories;
 using ChargeDischargeSystem.App.ViewModels;
 using ChargeDischargeSystem.App.Views;
 using ChargeDischargeSystem.Common.Config;
@@ -185,6 +186,8 @@ namespace ChargeDischargeSystem.App
             services.AddSingleton<ICalibrationService, CalibrationService>();
             services.AddSingleton<IProtocolService, ProtocolService>();
             services.AddSingleton<IBatteryProtocolService, BatteryProtocolService>();
+            services.AddSingleton<MeasurementRepository>();
+            services.AddSingleton<SessionRepository>();
             services.AddSingleton<IDataLogService, DataLogService>();
             services.AddSingleton<IFirmwareService, FirmwareService>();
             services.AddSingleton<IFaultRecordService, FaultRecordService>();

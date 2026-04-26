@@ -130,49 +130,38 @@ namespace ChargeDischargeSystem.App.ViewModels
 
         #endregion
 
-        #region 可观察属性
+        #region 可观察属性 — AC电气参数
 
-        /// <summary>
-        /// 设备列表（包含实时状态数据）
-        /// </summary>
+        [ObservableProperty] private double _gridPhaseAVoltage;    // 网侧A相电压(V)
+        [ObservableProperty] private double _gridPhaseBVoltage;    // 网侧B相电压(V)
+        [ObservableProperty] private double _gridPhaseCVoltage;    // 网侧C相电压(V)
+        [ObservableProperty] private double _acBusVoltage;         // AC侧母线电压(V)
+        [ObservableProperty] private double _machinePhaseAVoltage; // 机侧A相电压(V)
+        [ObservableProperty] private double _machinePhaseBVoltage; // 机侧B相电压(V)
+        [ObservableProperty] private double _machinePhaseCVoltage; // 机侧C相电压(V)
+        [ObservableProperty] private double _acBus2Voltage;        // AC侧2母线电压(V)
+        [ObservableProperty] private double _phaseACurrent;        // A相电流(A)
+        [ObservableProperty] private double _phaseBCurrent;        // B相电流(A)
+        [ObservableProperty] private double _phaseCCurrent;        // C相电流(A)
+        [ObservableProperty] private double _busVoltageRef;        // 母线电压给定(V)
+        [ObservableProperty] private double _phaseA2Current;       // A2相电流(A)
+        [ObservableProperty] private double _phaseB2Current;       // B2相电流(A)
+        [ObservableProperty] private double _phaseC2Current;       // C2相电流(A)
+        [ObservableProperty] private double _powerFactor;          // 功率因数
+        [ObservableProperty] private double _acActivePower;        // AC有功功率(kW)
+        [ObservableProperty] private double _acReactivePower;      // AC无功功率(kVar)
+        [ObservableProperty] private double _cumulativeDischarge;  // 累计放电量(kWh)
+        [ObservableProperty] private double _cumulativeCharge;     // 累计充电量(kWh)
+
+        #endregion
+
+        #region 可观察属性 — 设备列表
+
         [ObservableProperty]
         private ObservableCollection<DeviceStatusViewModel> _deviceList = new ObservableCollection<DeviceStatusViewModel>();
 
-        /// <summary>
-        /// 当前选中的设备
-        /// </summary>
         [ObservableProperty]
         private DeviceStatusViewModel? _selectedDevice;
-
-        /// <summary>
-        /// 实时电压值(V) - 选中设备或整体汇总
-        /// </summary>
-        [ObservableProperty]
-        private double _voltageValue;
-
-        /// <summary>
-        /// 实时电流值(A) - 选中设备或整体汇总
-        /// </summary>
-        [ObservableProperty]
-        private double _currentValue;
-
-        /// <summary>
-        /// 实时功率值(kW) - 选中设备或整体汇总
-        /// </summary>
-        [ObservableProperty]
-        private double _powerValue;
-
-        /// <summary>
-        /// 实时温度值(°C) - 选中设备或整体汇总
-        /// </summary>
-        [ObservableProperty]
-        private double _temperatureValue;
-
-        /// <summary>
-        /// 实时 SOC 值(%) - 选中设备或整体汇总
-        /// </summary>
-        [ObservableProperty]
-        private double _socValue;
 
         /// <summary>
         /// 活跃告警列表
@@ -332,15 +321,13 @@ namespace ChargeDischargeSystem.App.ViewModels
         /// <param name="dataPoints">设备ID与最新数据点的字典</param>
         private void OnMonitorDataUpdated(Dictionary<string, DeviceDataPoint> dataPoints)
         {
-            if (dataPoints == null)
-                return;
+            if (dataPoints == null) return;
 
             foreach (var kvp in dataPoints)
             {
                 var deviceId = kvp.Key;
                 var data = kvp.Value;
 
-                // 在设备列表中查找或创建对应的设备状态
                 var existingDevice = DeviceList.FirstOrDefault(d => d.DeviceId == deviceId);
                 if (existingDevice == null)
                 {
@@ -352,7 +339,6 @@ namespace ChargeDischargeSystem.App.ViewModels
                     DeviceList.Add(existingDevice);
                 }
 
-                // 更新设备实时数据
                 existingDevice.Voltage = data.Voltage;
                 existingDevice.Current = data.Current;
                 existingDevice.Power = data.Power;
@@ -362,19 +348,37 @@ namespace ChargeDischargeSystem.App.ViewModels
                 existingDevice.LastUpdateTimestamp = data.Timestamp;
                 existingDevice.Status = "Online";
 
-                // 如果该设备被选中，同步更新实时数值显示
-                if (SelectedDevice != null && SelectedDevice.DeviceId == deviceId)
-                {
-                    VoltageValue = data.Voltage;
-                    CurrentValue = data.Current;
-                    PowerValue = data.Power;
-                    TemperatureValue = data.Temperature;
-                    SocValue = data.Soc;
-                }
+                UpdateAcParameters(data);
             }
 
-            // 更新统计信息
             UpdateStatistics();
+        }
+
+        private void UpdateAcParameters(DeviceDataPoint data)
+        {
+            switch (data.ParameterName)
+            {
+                case "grid_phase_a_voltage": GridPhaseAVoltage = data.Value; break;
+                case "grid_phase_b_voltage": GridPhaseBVoltage = data.Value; break;
+                case "grid_phase_c_voltage": GridPhaseCVoltage = data.Value; break;
+                case "ac_bus_voltage": AcBusVoltage = data.Value; break;
+                case "machine_phase_a_voltage": MachinePhaseAVoltage = data.Value; break;
+                case "machine_phase_b_voltage": MachinePhaseBVoltage = data.Value; break;
+                case "machine_phase_c_voltage": MachinePhaseCVoltage = data.Value; break;
+                case "ac_bus2_voltage": AcBus2Voltage = data.Value; break;
+                case "phase_a_current": PhaseACurrent = data.Value; break;
+                case "phase_b_current": PhaseBCurrent = data.Value; break;
+                case "phase_c_current": PhaseCCurrent = data.Value; break;
+                case "bus_voltage_ref": BusVoltageRef = data.Value; break;
+                case "phase_a2_current": PhaseA2Current = data.Value; break;
+                case "phase_b2_current": PhaseB2Current = data.Value; break;
+                case "phase_c2_current": PhaseC2Current = data.Value; break;
+                case "power_factor": PowerFactor = data.Value; break;
+                case "ac_active_power": AcActivePower = data.Value; break;
+                case "ac_reactive_power": AcReactivePower = data.Value; break;
+                case "cumulative_discharge": CumulativeDischarge = data.Value; break;
+                case "cumulative_charge": CumulativeCharge = data.Value; break;
+            }
         }
 
         /// <summary>

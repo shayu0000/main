@@ -14,46 +14,26 @@ namespace ChargeDischargeSystem.Core.Services
     /// </summary>
     public class DeviceDataPoint
     {
-        /// <summary>设备ID</summary>
         public string DeviceId { get; set; }
-
-        /// <summary>采集时间戳（Unix毫秒）</summary>
         public long Timestamp { get; set; }
 
-        /// <summary>直流电压(V)</summary>
+        /// <summary>参数名称: voltage/current/power/temperature/soc 或 AC特定参数</summary>
+        public string ParameterName { get; set; } = string.Empty;
+
+        /// <summary>参数值</summary>
+        public double Value { get; set; }
+
         public double Voltage { get; set; }
-
-        /// <summary>直流电流(A)，正值充电/负值放电</summary>
         public double Current { get; set; }
-
-        /// <summary>有功功率(kW)</summary>
         public double Power { get; set; }
-
-        /// <summary>设备温度(°C)</summary>
         public double Temperature { get; set; }
-
-        /// <summary>荷电状态 SOC (%)</summary>
         public double Soc { get; set; }
-
-        /// <summary>健康状态 SOH (%)</summary>
         public double Soh { get; set; }
-
-        /// <summary>单体最高电压(V)</summary>
         public double CellMaxVoltage { get; set; }
-
-        /// <summary>单体最低电压(V)</summary>
         public double CellMinVoltage { get; set; }
-
-        /// <summary>单体最高温度(°C)</summary>
         public double CellMaxTemperature { get; set; }
-
-        /// <summary>单体最低温度(°C)</summary>
         public double CellMinTemperature { get; set; }
-
-        /// <summary>数据质量: GOOD/UNCERTAIN/BAD</summary>
         public string Quality { get; set; } = "GOOD";
-
-        /// <summary>扩展参数字典，存储自定义参数</summary>
         public Dictionary<string, double> ExtraParams { get; set; } = new Dictionary<string, double>();
     }
 

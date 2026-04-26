@@ -136,7 +136,7 @@ namespace ChargeDischargeSystem.App.ViewModels
                 var endMs = new DateTimeOffset(QueryEndTime).ToUnixTimeMilliseconds();
 
                 var data = await Task.Run(() =>
-                    _dataLogService.QueryData(QueryDeviceId, QueryParameter, startMs, endMs));
+                    _dataLogService.QueryData(QueryDeviceId, new List<string> { QueryParameter }, startMs, endMs));
 
                 DataPoints.Clear();
                 var chart = new List<(long, double)>();
