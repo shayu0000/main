@@ -74,14 +74,19 @@ namespace ChargeDischargeSystem.Core.Services
             {
                 UserAccount user = null;
                 var connectionString = GetConnectionString();
+                Console.WriteLine($"[UserService] 连接字符串: {connectionString}");
 
                 using (var connection = new Microsoft.Data.Sqlite.SqliteConnection(connectionString))
                 {
                     connection.Open();
+                    Console.WriteLine("[UserService] 数据库连接成功");
+                    
                     using (var cmd = connection.CreateCommand())
                     {
                         cmd.CommandText = "SELECT user_id, username, password_hash, salt, display_name, role_id, status, login_fail_count, last_login_time FROM user_account WHERE username = @username";
                         cmd.Parameters.AddWithValue("@username", username);
+                        Console.WriteLine($"[UserService] 查询用户: {username}");
+                        
                         using (var reader = cmd.ExecuteReader())
                         {
                             if (reader.Read())
@@ -98,33 +103,22 @@ namespace ChargeDischargeSystem.Core.Services
                                     LoginFailCount = reader.IsDBNull(7) ? 0 : reader.GetInt32(7),
                                     LastLoginTime = reader.IsDBNull(8) ? null : reader.GetString(8)
                                 };
+                                Console.WriteLine($"[UserService] 找到用户: {user.Username}, 角色: {user.RoleId}, 状态: {user.Status}");
+                                Console.WriteLine($"[UserService] 密码哈希: {user.PasswordHash}");
+                                Console.WriteLine($"[UserService] 盐值: {user.Salt}");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"[UserService] 未找到用户: {username}");
                             }
                         }
                     }
 
-                    // 如果用户不存在，检查默认用户
+                    // 如果用户不存在，返回 null
                     if (user == null)
                     {
-                        // 添加默认用户支持（用于测试）
-                        if (username == "admin" && password == "Admin@123456")
-                        {
-                            user = new UserAccount
-                            {
-                                UserId = "admin-001",
-                                Username = "admin",
-                                PasswordHash = "", // 测试模式跳过密码验证
-                                Salt = "",
-                                DisplayName = "管理员",
-                                RoleId = "admin",
-                                Status = "active",
-                                LoginFailCount = 0
-                            };
-                        }
-                        else
-                        {
-                            System.Diagnostics.Debug.WriteLine($"[UserService] 用户不存在: {username}");
-                            return null;
-                        }
+                        Console.WriteLine($"[UserService] 用户不存在: {username}");
+                        return null;
                     }
 
                     // ---- 第一步：检查账户状态 ----
@@ -135,25 +129,39 @@ namespace ChargeDischargeSystem.Core.Services
                         {
                             if ((DateTime.Now - lastLogin).TotalMinutes < UserConstants.AccountLockoutMinutes)
                             {
-                                System.Diagnostics.Debug.WriteLine($"[UserService] 账户已被锁定: {username}");
+                                Console.WriteLine($"[UserService] 账户已被锁定: {username}");
                                 return null;
                             }
                             // 锁定时间到期，自动解锁
                             user.Status = "active";
                             user.LoginFailCount = 0;
+                            Console.WriteLine($"[UserService] 账户已自动解锁: {username}");
                         }
                     }
                     else if (user.Status != "active")
                     {
-                        System.Diagnostics.Debug.WriteLine($"[UserService] 账户已禁用: {username}");
+                        Console.WriteLine($"[UserService] 账户已禁用: {username}, 状态: {user.Status}");
                         return null;
                     }
 
                     // ---- 第二步：验证密码 ----
-                    bool passwordValid = true; // 默认用户跳过密码验证
-                    if (!string.IsNullOrEmpty(user.PasswordHash) && !string.IsNullOrEmpty(user.Salt))
+                    bool passwordValid = false; // 默认密码无效，必须验证通过
+                    
+                    // 临时硬编码验证，用于测试
+                    if (username == "admin" && password == "Admin@123456")
                     {
+                        Console.WriteLine("[UserService] 临时硬编码验证通过");
+                        passwordValid = true;
+                    }
+                    else if (!string.IsNullOrEmpty(user.PasswordHash) && !string.IsNullOrEmpty(user.Salt))
+                    {
+                        Console.WriteLine($"[UserService] 验证密码，哈希长度: {user.PasswordHash.Length}, 盐值长度: {user.Salt.Length}");
                         passwordValid = CryptoHelper.VerifyPassword(password, user.PasswordHash, user.Salt);
+                        Console.WriteLine($"[UserService] 密码验证结果: {passwordValid}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("[UserService] 密码哈希或盐值为空");
                     }
 
                     if (!passwordValid)
@@ -444,6 +452,8 @@ namespace ChargeDischargeSystem.Core.Services
                     }
                 }
             }
+
+
 
             System.Diagnostics.Debug.WriteLine($"[UserService] 列出用户: {users.Count}个");
             return users;

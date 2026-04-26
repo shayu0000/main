@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignHeight="600" d:DesignWidth="900"
+             d:DesignHeight="600" d:DesignWidth="1000"
              Background="{StaticResource BackgroundColor}">
 
     <Grid Margin="12">
@@ -33,16 +33,56 @@
                           Style="{StaticResource MaterialDataGrid}"
                           Margin="8,0,8,8">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="用户名" Binding="{Binding Username}" Width="100"/>
-                        <DataGridTextColumn Header="显示名称" Binding="{Binding DisplayName}" Width="120"/>
-                        <DataGridTextColumn Header="邮箱" Binding="{Binding Email}" Width="150"/>
-                        <DataGridTextColumn Header="电话" Binding="{Binding Phone}" Width="100"/>
-                        <DataGridTextColumn Header="角色" Binding="{Binding RoleId}" Width="90"/>
-                        <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="70"/>
-                        <DataGridTemplateColumn Header="操作" Width="120">
+                        <DataGridTextColumn Header="用户名" Binding="{Binding Username}" Width="80"/>
+                        <DataGridTextColumn Header="显示名称" Binding="{Binding DisplayName}" Width="90"/>
+                        <DataGridTextColumn Header="邮箱" Binding="{Binding Email}" Width="130"/>
+                        <DataGridTextColumn Header="电话" Binding="{Binding Phone}" Width="90"/>
+                        <DataGridTextColumn Header="角色" Binding="{Binding RoleName}" Width="70"/>
+                        <DataGridTemplateColumn Header="状态" Width="65">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
+                                    <Border CornerRadius="3" Padding="6,2" HorizontalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="#107C10"/>
+                                                <Setter Property="BorderBrush" Value="#107C10"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Status}" Value="disabled">
+                                                        <Setter Property="Background" Value="#9E9E9E"/>
+                                                        <Setter Property="BorderBrush" Value="#9E9E9E"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Status}" Value="locked">
+                                                        <Setter Property="Background" Value="#D13438"/>
+                                                        <Setter Property="BorderBrush" Value="#D13438"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <TextBlock Text="{Binding Status}" Foreground="White" FontSize="11" HorizontalAlignment="Center">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="活跃"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="disabled">
+                                                            <Setter Property="Text" Value="禁用"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Status}" Value="locked">
+                                                            <Setter Property="Text" Value="锁定"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="最后登录" Binding="{Binding LastLoginTime}" Width="120"/>
+                        <DataGridTextColumn Header="创建时间" Binding="{Binding CreatedAt}" Width="120"/>
+                        <DataGridTemplateColumn Header="操作" Width="100">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                         <Button Content="编辑" Padding="6,3" FontSize="12" Margin="2"
                                                 Style="{StaticResource SecondaryButton}"
                                                 Command="{Binding DataContext.EditUserCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"/>

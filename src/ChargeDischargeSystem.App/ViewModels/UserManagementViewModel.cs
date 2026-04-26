@@ -86,8 +86,8 @@ namespace ChargeDischargeSystem.App.ViewModels
         public UserManagementViewModel(IUserService userService)
         {
             _userService = userService ?? throw new ArgumentNullException(nameof(userService));
-            LoadUsers();
             LoadRoles();
+            LoadUsers();
         }
 
         /// <summary>
@@ -265,16 +265,19 @@ namespace ChargeDischargeSystem.App.ViewModels
         }
 
         /// <summary>
-        /// 加载用户列表
+        /// 加载用户列表——从SQLite读取用户数据并解析角色名称
         /// </summary>
         private void LoadUsers()
         {
             try
             {
+                var roleMap = RoleList.ToDictionary(r => r.RoleId, r => r.RoleName);
                 var users = _userService.ListUsers();
                 UserList.Clear();
                 foreach (var user in users)
                 {
+                    roleMap.TryGetValue(user.RoleId ?? "", out var roleName);
+                    user.RoleName = roleName ?? user.RoleId;
                     UserList.Add(user);
                 }
                 StatusMessage = $"已加载 {UserList.Count} 个用户";

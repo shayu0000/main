@@ -150,11 +150,20 @@ namespace ChargeDischargeSystem.App.ViewModels
         [RelayCommand]
         private async Task LoginAsync()
         {
+            Console.WriteLine("[LoginViewModel] 登录按钮点击");
             ErrorMessage = string.Empty;
 
             if (string.IsNullOrWhiteSpace(Username))
             {
                 ErrorMessage = "请输入用户名";
+                Console.WriteLine("[LoginViewModel] 用户名为空");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(Password))
+            {
+                ErrorMessage = "请输入密码";
+                Console.WriteLine("[LoginViewModel] 密码为空");
                 return;
             }
 
@@ -162,6 +171,7 @@ namespace ChargeDischargeSystem.App.ViewModels
             {
                 var remainingMinutes = (_lockoutEndTime.Value - DateTime.Now).TotalMinutes;
                 ErrorMessage = $"账户已被锁定，请在 {remainingMinutes:F1} 分钟后重试";
+                Console.WriteLine($"[LoginViewModel] 账户被锁定，剩余时间：{remainingMinutes:F1} 分钟");
                 return;
             }
 
@@ -169,20 +179,25 @@ namespace ChargeDischargeSystem.App.ViewModels
             {
                 _lockoutEndTime = null;
                 _loginFailCount = 0;
+                Console.WriteLine("[LoginViewModel] 锁定时间到期，自动解锁");
             }
 
             IsLoggingIn = true;
             UpdateStatusMessage();
+            Console.WriteLine($"[LoginViewModel] 开始登录，用户名：{Username}");
 
             try
             {
+                Console.WriteLine($"[LoginViewModel] 调用 UserService.Authenticate");
                 var token = await Task.Run(() => _userService.Authenticate(Username, Password));
+                Console.WriteLine($"[LoginViewModel] 认证结果：token = {token}");
 
                 if (!string.IsNullOrEmpty(token))
                 {
                     _loginFailCount = 0;
                     _lockoutEndTime = null;
                     ErrorMessage = string.Empty;
+                    Console.WriteLine("[LoginViewModel] 登录成功");
 
                     SaveSettings();
 
@@ -200,11 +215,13 @@ namespace ChargeDischargeSystem.App.ViewModels
                     _loginFailCount++;
                     ErrorMessage = $"用户名或密码错误（剩余尝试次数：{MaxLoginAttempts - _loginFailCount}）";
                     StatusMessage = "登录失败";
+                    Console.WriteLine($"[LoginViewModel] 登录失败，错误次数：{_loginFailCount}");
 
                     if (_loginFailCount >= MaxLoginAttempts)
                     {
                         _lockoutEndTime = DateTime.Now.AddMinutes(LockoutDurationMinutes);
                         ErrorMessage = $"登录失败次数过多，账户已被锁定 {LockoutDurationMinutes} 分钟";
+                        Console.WriteLine($"[LoginViewModel] 账户被锁定 {LockoutDurationMinutes} 分钟");
                     }
                 }
             }
@@ -212,11 +229,13 @@ namespace ChargeDischargeSystem.App.ViewModels
             {
                 ErrorMessage = $"登录过程发生异常：{ex.Message}";
                 StatusMessage = "登录异常";
+                Console.WriteLine($"[LoginViewModel] 登录异常：{ex.Message}");
             }
             finally
             {
                 IsLoggingIn = false;
                 UpdateStatusMessage();
+                Console.WriteLine("[LoginViewModel] 登录过程结束");
             }
         }
 

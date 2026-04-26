@@ -33,6 +33,8 @@ namespace ChargeDischargeSystem.Core.Models
         public string Phone { get; set; }
         /// <summary>角色ID，外键关联user_role表</summary>
         public string RoleId { get; set; }
+        /// <summary>角色名称，用于界面显示，非数据库持久化字段</summary>
+        public string RoleName { get; set; }
         /// <summary>账户状态: active活跃/disabled禁用/locked锁定</summary>
         public string Status { get; set; } = "active";
         /// <summary>最后登录时间，格式为yyyy-MM-dd HH:mm:ss</summary>

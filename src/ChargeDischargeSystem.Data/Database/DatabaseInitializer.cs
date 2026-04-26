@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Data.Sqlite;
+using System.Data;
+using ChargeDischargeSystem.Common.Helpers;
 
 // ============================================================
 // 命名空间: ChargeDischargeSystem.Data.Database
@@ -77,6 +79,9 @@ namespace ChargeDischargeSystem.Data.Database
 
                         // ========== 第六步：建立角色-权限关联 ==========
                         InsertRolePermissions(connection);
+
+                        // ========== 第七步：插入默认管理员用户 ==========
+                        InsertDefaultAdminUser(connection);
 
                         // 提交事务（所有操作成功则持久化）
                         transaction.Commit();
@@ -741,6 +746,50 @@ namespace ChargeDischargeSystem.Data.Database
                 }
             }
         }
+
+        /// <summary>
+        /// 插入默认管理员用户
+        /// 系统首次初始化时创建默认管理员账号，用于初始登录和系统配置。
+        /// 密码：Admin@123456，使用 SHA-256 + Salt 加密。
+        /// </summary>
+        /// <param name="connection">已打开的SQLite连接</param>
+        private static void InsertDefaultAdminUser(SqliteConnection connection)
+        {
+            // 生成默认管理员的密码哈希和盐值
+            string password = "Admin@123456";
+            var (passwordHash, salt) = CryptoHelper.HashPassword(password);
+
+            // 使用 INSERT OR IGNORE 避免重复插入时出错
+            const string insertUserSql = @"
+                INSERT OR IGNORE INTO user_account (
+                    user_id, username, password_hash, salt, display_name, 
+                    email, phone, role_id, status, login_fail_count, 
+                    created_at, updated_at
+                ) VALUES (
+                    @user_id, @username, @password_hash, @salt, @display_name, 
+                    @email, @phone, @role_id, @status, @login_fail_count, 
+                    datetime('now'), datetime('now')
+                );
+            ";
+
+            using (SqliteCommand command = connection.CreateCommand())
+            {
+                command.CommandText = insertUserSql;
+                command.Parameters.AddWithValue("@user_id", "admin-001");
+                command.Parameters.AddWithValue("@username", "admin");
+                command.Parameters.AddWithValue("@password_hash", passwordHash);
+                command.Parameters.AddWithValue("@salt", salt);
+                command.Parameters.AddWithValue("@display_name", "管理员");
+                command.Parameters.AddWithValue("@email", (object)DBNull.Value);
+                command.Parameters.AddWithValue("@phone", (object)DBNull.Value);
+                command.Parameters.AddWithValue("@role_id", RoleAdmin);
+                command.Parameters.AddWithValue("@status", "active");
+                command.Parameters.AddWithValue("@login_fail_count", 0);
+                command.ExecuteNonQuery();
+            }
+        }
+
+
 
         #endregion
 
